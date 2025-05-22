@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:spend_controll/shared/widgets/form_input_and_title.dart';
 import 'Controller/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
@@ -12,6 +13,11 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final List<FocusNode> _focusNodes = List<FocusNode>.generate(
+    2,
+    (_) => FocusNode(),
+    growable: false,
+  );
   final emailController = TextEditingController();
   final senhaController = TextEditingController();
 
@@ -49,18 +55,38 @@ class _LoginPageState extends State<LoginPage> {
                   builder: (context, state) {
                     return Column(
                       children: [
-                        TextField(
+                        FormInputAndTitle(
+                          focus: _focusNodes[0],
+                          title: 'E-mail',
+                          hintText: 'Informe',
                           controller: emailController,
-                          decoration:
-                              const InputDecoration(labelText: 'E-mail'),
+                          maskFormatter: const [],
+                          fontSize: 13,
+                          onSaved: (p0) {},
+                          validator: (p0) {
+                            if (p0 == null || p0.isEmpty) {
+                              return 'Campo vazio';
+                            }
+                            return null;
+                          },
                           onChanged: (value) {
                             email = value;
                           },
                         ),
-                        TextField(
+                        FormInputAndTitle(
+                          focus: _focusNodes[1],
+                          title: 'Senha',
+                          hintText: 'Informe',
                           controller: senhaController,
-                          decoration: const InputDecoration(labelText: 'Senha'),
-                          obscureText: false,
+                          maskFormatter: const [],
+                          fontSize: 13,
+                          onSaved: (p0) {},
+                          validator: (p0) {
+                            if (p0 == null || p0.isEmpty) {
+                              return 'Campo vazio';
+                            }
+                            return null;
+                          },
                           onChanged: (value) {
                             password = value;
                           },
