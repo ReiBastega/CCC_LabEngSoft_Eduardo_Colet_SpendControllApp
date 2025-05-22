@@ -51,74 +51,72 @@ class _LoginPageState extends State<LoginPage> {
             }
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-              child: BlocBuilder<LoginController, LoginState>(
-                  bloc: widget.loginController,
-                  builder: (context, state) {
-                    return Column(
-                      children: [
-                        FormInputAndTitle(
-                          focus: _focusNodes[0],
-                          title: 'E-mail',
-                          hintText: 'Informe',
-                          controller: emailController,
-                          maskFormatter: const [],
-                          fontSize: 13,
-                          onSaved: (p0) {},
-                          validator: (p0) {
-                            if (p0 == null || p0.isEmpty) {
-                              return 'Campo vazio';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            email = value;
-                          },
-                        ),
-                        FormInputAndTitle(
-                          focus: _focusNodes[1],
-                          title: 'Senha',
-                          hintText: 'Informe',
-                          controller: senhaController,
-                          maskFormatter: const [],
-                          fontSize: 13,
-                          onSaved: (p0) {},
-                          validator: (p0) {
-                            if (p0 == null || p0.isEmpty) {
-                              return 'Campo vazio';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {
-                            password = value;
-                          },
-                        ),
-                        const SizedBox(height: 24),
-                        Button(
-                          onPressed: () {
-                            widget.loginController.login(email!, password!);
-                            // Modular.to.pushNamed('/home');
-                          },
-                          text: 'Cadastro',
-                        ),
-                        const SizedBox(height: 24),
-                        Button(
-                            onPressed: () {
-                              Modular.to.pushNamed('/home');
-                            },
-                            text: 'Esqueci minha senha'),
-                      ],
-                    );
-                  }),
+              child: Column(
+                children: [
+                  FormInputAndTitle(
+                    focus: _focusNodes[0],
+                    title: 'E-mail',
+                    hintText: 'Informe',
+                    controller: emailController,
+                    maskFormatter: const [],
+                    onSaved: (p0) {},
+                    validator: (p0) {
+                      if (p0 == null || p0.isEmpty) {
+                        return 'Campo vazio';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      email = value;
+                    },
+                  ),
+                  FormInputAndTitle(
+                    focus: _focusNodes[1],
+                    title: 'Senha',
+                    hintText: 'Informe',
+                    controller: senhaController,
+                    maskFormatter: const [],
+                    onSaved: (p0) {},
+                    validator: (p0) {
+                      if (p0 == null || p0.isEmpty) {
+                        return 'Campo vazio';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      password = value;
+                    },
+                  ),
+                  const SizedBox(height: 24),
+                  Button(
+                    onPressed: () {
+                      widget.loginController.login(email!, password!);
+                      // Modular.to.pushNamed('/home');
+                    },
+                    text: 'Cadastro',
+                  ),
+                  const SizedBox(height: 24),
+                  Button(
+                      onPressed: () {
+                        Modular.to.pushNamed('/home');
+                      },
+                      text: 'Esqueci minha senha'),
+                ],
+              ),
             );
           }),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        child: Button(
-          onPressed: () {
-            Modular.to.pushNamed('/home');
-          },
-          text: 'Entrar',
-        ),
+        child: BlocBuilder<LoginController, LoginState>(
+            bloc: widget.loginController,
+            builder: (context, state) {
+              return Button(
+                onPressed: () {
+                  Modular.to.pushNamed('/home');
+                },
+                text: 'Entrar',
+              );
+            }),
       ),
     );
   }
