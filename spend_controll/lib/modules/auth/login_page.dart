@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:spend_controll/shared/widgets/button.dart';
 import 'package:spend_controll/shared/widgets/form_input_and_title.dart';
 import 'Controller/login_controller.dart';
 
@@ -92,20 +93,19 @@ class _LoginPageState extends State<LoginPage> {
                           },
                         ),
                         const SizedBox(height: 24),
-                        ElevatedButton(
+                        Button(
                           onPressed: () {
                             widget.loginController.login(email!, password!);
                             // Modular.to.pushNamed('/home');
                           },
-                          child: const Text('Cadastro'),
+                          text: 'Cadastro',
                         ),
                         const SizedBox(height: 24),
-                        ElevatedButton(
-                          onPressed: () {
-                            Modular.to.pushNamed('/home');
-                          },
-                          child: const Text('Esqueci minha senha'),
-                        ),
+                        Button(
+                            onPressed: () {
+                              Modular.to.pushNamed('/home');
+                            },
+                            text: 'Esqueci minha senha'),
                       ],
                     );
                   }),
@@ -113,11 +113,11 @@ class _LoginPageState extends State<LoginPage> {
           }),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-        child: ElevatedButton(
+        child: Button(
           onPressed: () {
             Modular.to.pushNamed('/home');
           },
-          child: const Text('Entrar'),
+          text: 'Entrar',
         ),
       ),
     );
