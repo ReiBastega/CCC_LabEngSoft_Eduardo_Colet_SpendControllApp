@@ -1,21 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'views/login_page.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:spend_controll/app_modules.dart';
+import 'app_widget.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Controle de Gastos e Ganhos',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginPage(),
-    );
-  }
+  await Firebase.initializeApp();
+  runApp(ModularApp(module: AppModule(), child: const AppWidget()));
 }

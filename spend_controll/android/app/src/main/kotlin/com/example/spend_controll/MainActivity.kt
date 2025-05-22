@@ -1,4 +1,4 @@
-package com.example.spend_controll
+package com.project.spend_controll
 
 import io.flutter.embedding.android.FlutterActivity
 

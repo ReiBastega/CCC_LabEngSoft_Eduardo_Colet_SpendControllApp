@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "333818005575",
+    "project_id": "spendcontroll",
+    "storage_bucket": "spendcontroll.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:333818005575:android:7608cabdeb28a499da0962",
+        "android_client_info": {
+          "package_name": "com.project.spend_controll"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVpAuNZ8S5BsLey4i8NwRDpjyvgs-tjw0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
