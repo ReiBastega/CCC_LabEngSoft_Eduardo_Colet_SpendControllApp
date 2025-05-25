@@ -25,11 +25,11 @@ class _HomePageState extends State<HomePage> {
         drawer: DrawerWidget(
           drawerTiles: [
             DrawerTile(
-              icon: Icon(Icons.logout),
+              icon: const Icon(Icons.logout),
               title: 'Log out',
               func: () {
                 widget.loginController.logout();
-                Modular.to.pushNamed('/login');
+                Modular.to.pushNamed('/');
               },
             ),
           ],

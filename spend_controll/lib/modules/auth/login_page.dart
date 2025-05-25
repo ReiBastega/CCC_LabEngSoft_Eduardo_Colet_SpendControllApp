@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_modular/flutter_modular.dart';
 import 'package:spend_controll/shared/widgets/button.dart';
 import 'package:spend_controll/shared/widgets/form_input_and_title.dart';
+
 import 'Controller/login_controller.dart';
 
 class LoginPage extends StatefulWidget {
@@ -26,6 +26,12 @@ class _LoginPageState extends State<LoginPage> {
   String? password;
 
   @override
+  void initState() {
+    widget.loginController.checkActualUser();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -41,8 +47,6 @@ class _LoginPageState extends State<LoginPage> {
             if (state.status == LoginStatus.failure) {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Falha no login')));
-            } else if (state.status == LoginStatus.success) {
-              Modular.to.pushNamed('/home');
             }
           },
           builder: (context, state) {
@@ -111,7 +115,7 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context, state) {
               return Button(
                 onPressed: () {
-                  widget.loginController.login(email!, password!);
+                  widget.loginController.signIn(email!, password!, context);
                 },
                 text: 'Entrar',
               );
