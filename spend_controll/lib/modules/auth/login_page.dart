@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Falha no login')));
             } else if (state.status == LoginStatus.success) {
-              Modular.to.navigate('/home');
+              Modular.to.pushNamed('/home');
             }
           },
           builder: (context, state) {
@@ -90,7 +90,6 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 24),
                   Button(
                     onPressed: () {
-                      widget.loginController.login(email!, password!);
                       // Modular.to.pushNamed('/home');
                     },
                     text: 'Cadastro',
@@ -98,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 24),
                   Button(
                       onPressed: () {
-                        Modular.to.pushNamed('/home');
+                        widget.loginController.logout();
                       },
                       text: 'Esqueci minha senha'),
                 ],
@@ -112,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context, state) {
               return Button(
                 onPressed: () {
-                  Modular.to.pushNamed('/home');
+                  widget.loginController.login(email!, password!);
                 },
                 text: 'Entrar',
               );

@@ -13,6 +13,7 @@ class HomeModule extends Module {
         ChildRoute('/',
             child: (context, args) => HomePage(
                   homeController: Modular.get(),
+                  loginController: Modular.get(),
                 ))
       ];
 }

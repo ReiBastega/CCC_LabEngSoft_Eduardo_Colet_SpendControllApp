@@ -150,7 +150,7 @@ class _FormInputAndTitleState extends State<FormInputAndTitle> {
                                 textCapitalization: widget.textCapitalization,
                                 style: TextStyle(
                                     fontSize: widget.fontSize ?? 13,
-                                    fontWeight: FontWeight.w300,
+                                    fontWeight: FontWeight.w500,
                                     fontFamily: 'Montserrat'),
                                 focusNode: focusNode,
                                 controller: widget.controller,
