@@ -19,28 +19,25 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Home'),
-        ),
-        drawer: DrawerWidget(
-          drawerTiles: [
-            DrawerTile(
-              icon: const Icon(Icons.logout),
-              title: 'Log out',
-              func: () {
-                widget.loginController.logout();
-                Modular.to.pushNamed('/');
-              },
+      appBar: AppBar(
+        title: const Text('Home'),
+      ),
+      drawer: DrawerWidget(
+        drawerTiles: [
+          DrawerTile(
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.black,
             ),
-          ],
-        ),
-        body: const Column(
-          children: [],
-        ),
-        bottomNavigationBar: ElevatedButton(
-            onPressed: () {
-              Modular.to.pushNamed('/grupo');
+            title: 'Log out',
+            func: () {
+              widget.loginController.logout();
+              Modular.to.pushNamed('/');
             },
-            child: const Text('Proxima pagina')));
+          ),
+        ],
+      ),
+      body: const Column(),
+    );
   }
 }

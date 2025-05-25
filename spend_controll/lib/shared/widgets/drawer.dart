@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class DrawerWidget extends StatelessWidget {
   final List<DrawerTile> drawerTiles;
@@ -30,14 +29,7 @@ class DrawerWidget extends StatelessWidget {
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    child: SvgPicture.asset(
-                      'assets/icons/ic_close_menu.svg',
-                      colorFilter: ColorFilter.mode(
-                          isDark
-                              ? const Color(0XFFFFFFFF)
-                              : const Color(0xFF313131),
-                          BlendMode.srcIn),
-                    )),
+                    child: const Icon(Icons.close)),
               ),
               const SizedBox(height: 76),
               Column(children: drawerTiles),
@@ -79,10 +71,9 @@ class DrawerTile extends StatelessWidget {
                 color:
                     isDark ? const Color(0XFFFFFFFF) : const Color(0XFF313131)),
           ),
-          trailing: SvgPicture.asset('assets/icons/ic_arrow_right_small.svg',
-              colorFilter: ColorFilter.mode(
-                  isDark ? const Color(0XFFFFFFFF) : const Color(0xFF313131),
-                  BlendMode.srcIn)),
+          trailing: Icon(
+            icon.icon,
+          ),
           onTap: func,
         ),
         Padding(
