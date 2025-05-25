@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:spend_controll/modules/auth/Controller/login_controller.dart';
+import 'package:spend_controll/modules/auth/controller/login_controller.dart';
 import 'package:spend_controll/modules/home/Controller/home_controller.dart';
 import 'package:spend_controll/shared/widgets/drawer.dart';
 

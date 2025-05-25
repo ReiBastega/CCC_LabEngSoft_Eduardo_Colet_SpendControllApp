@@ -17,7 +17,7 @@ class FormInputAndTitle extends StatefulWidget {
   final TextInputAction textInputAction;
   final TextEditingController? controller;
   final List<TextInputFormatter> maskFormatter;
-  final String? iconPath;
+  final IconData? iconPath;
   final String? iconRightPath;
   final bool hasUnderline;
   final TextCapitalization textCapitalization;
@@ -97,15 +97,10 @@ class _FormInputAndTitleState extends State<FormInputAndTitle> {
                     if (widget.iconPath != null)
                       Padding(
                         padding: const EdgeInsets.only(right: 18),
-                        child: SvgPicture.asset(
-                          widget.iconPath!,
-                          width: 20,
-                          height: 20,
-                          colorFilter: ColorFilter.mode(
-                              isDarkMode
-                                  ? const Color(0XFFFFFFFF)
-                                  : const Color(0XFF313131),
-                              BlendMode.srcIn),
+                        child: Icon(
+                          widget.iconPath,
+                          size: 20,
+                          weight: 20,
                         ),
                       ),
                     Expanded(
