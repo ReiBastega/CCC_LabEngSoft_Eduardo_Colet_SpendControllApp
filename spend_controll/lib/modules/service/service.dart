@@ -27,7 +27,9 @@ class Service {
       name: groupName,
       adminUserId: userId,
       memberUserIds: [userId], // O criador é o primeiro membro e admin
-      createdAt: Timestamp.now(),
+      createdAt: Timestamp.now(), balance: 0.0, // Inicializa o saldo como 0
+      memberCount: 1, // Inicializa com 1 membro (o criador)
+      isPositive: true, // Inicializa como positivo
     );
 
     await newGroupRef.set(group.toFirestore());

@@ -6,6 +6,9 @@ class Group {
   final String adminUserId;
   final List<String> memberUserIds;
   final Timestamp createdAt;
+  final double balance;
+  final int memberCount;
+  final bool isPositive;
 
   Group({
     required this.id,
@@ -13,6 +16,9 @@ class Group {
     required this.adminUserId,
     required this.memberUserIds,
     required this.createdAt,
+    required this.balance,
+    required this.memberCount,
+    required this.isPositive,
   });
 
   // Método para converter um DocumentSnapshot do Firestore em um objeto Group
@@ -25,6 +31,9 @@ class Group {
       // Garante que memberUserIds seja sempre uma lista de strings
       memberUserIds: List<String>.from(data['memberUserIds'] ?? []),
       createdAt: data['createdAt'] ?? Timestamp.now(),
+      memberCount: (data['memberUserIds'] as List?)?.length ?? 0,
+      isPositive: (data['balance'] ?? 0.0) >= 0,
+      balance: (data['balance'] ?? 0.0).toDouble(),
     );
   }
 
