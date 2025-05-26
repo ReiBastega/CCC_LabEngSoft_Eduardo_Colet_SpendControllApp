@@ -4,33 +4,28 @@ enum HomeStatus { initial, loading, failure, success }
 
 class HomeState {
   final HomeStatus status;
-  final String? actualPassword;
-  final String? token;
+  final String? errorMessege;
 
   const HomeState({
     required this.status,
-    required this.actualPassword,
-    required this.token,
+    required this.errorMessege,
   });
 
   const HomeState.initial()
       : this(
           status: HomeStatus.initial,
-          actualPassword: '',
-          token: '',
+          errorMessege: '',
         );
 
-  List<Object?> get props => [status, actualPassword, token];
+  List<Object?> get props => [status, errorMessege];
 
   HomeState copyWith({
     HomeStatus? status,
-    String? actualPassword,
-    String? token,
+    String? errorMessege,
   }) {
     return HomeState(
       status: status ?? this.status,
-      actualPassword: actualPassword ?? this.actualPassword,
-      token: token ?? this.token,
+      errorMessege: errorMessege ?? this.errorMessege,
     );
   }
 }

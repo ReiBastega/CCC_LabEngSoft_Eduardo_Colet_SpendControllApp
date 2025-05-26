@@ -42,7 +42,7 @@ class LoginController extends Cubit<LoginState> {
       if (loggedIn) {
         Modular.to.navigate("/home");
       }
-    } on AuthException catch (e) {
+    } on AuthException {
       emit(state.copyWith(status: LoginStatus.failure));
     } catch (_) {
       emit(state.copyWith(status: LoginStatus.failure));
