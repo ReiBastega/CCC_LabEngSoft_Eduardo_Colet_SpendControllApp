@@ -4,21 +4,23 @@ enum ForgotPasswordStatus { initial, loading, failure, success }
 
 class ForgotPasswordState {
   final ForgotPasswordStatus status;
+  final String? errorMessage;
 
   const ForgotPasswordState({
     required this.status,
+    this.errorMessage,
   });
 
-  const ForgotPasswordState.initial()
-      : this(status: ForgotPasswordStatus.initial);
-
-  List<Object?> get props => [status];
+  factory ForgotPasswordState.initial() =>
+      const ForgotPasswordState(status: ForgotPasswordStatus.initial);
 
   ForgotPasswordState copyWith({
     ForgotPasswordStatus? status,
+    String? errorMessage,
   }) {
     return ForgotPasswordState(
       status: status ?? this.status,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 }

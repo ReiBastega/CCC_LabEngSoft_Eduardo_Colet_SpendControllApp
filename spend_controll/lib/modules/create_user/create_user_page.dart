@@ -107,7 +107,6 @@ class _CreateUserPageState extends State<CreateUserPage> {
                       ? 'Senha deve ter ao menos 6 caracteres'
                       : null,
                 ),
-                const SizedBox(height: 24),
               ],
             ),
           ),

@@ -55,6 +55,8 @@ class _LoginPageState extends State<LoginPage> {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   FormInputAndTitle(
                     focus: _focusNodes[0],
@@ -100,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                             fontWeight: FontWeight.w500,
                           )),
                       onPressed: () {
-                        Modular.to.pushNamed('/forgot-password/');
+                        Modular.to.pushNamed('/forgot_password/');
                       },
                     ),
                   ),

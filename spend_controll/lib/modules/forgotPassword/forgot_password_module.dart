@@ -5,7 +5,8 @@ import 'package:spend_controll/modules/forgotPassword/forgot_password_page.dart'
 class ForgotPasswordModule extends Module {
   @override
   List<Bind<Object>> get binds => [
-        Bind.lazySingleton((i) => ForgotPasswordController(service: i())),
+        Bind.lazySingleton(
+            (i) => ForgotPasswordController(service: i(), auth: i())),
       ];
 
   @override
