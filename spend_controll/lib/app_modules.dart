@@ -5,7 +5,7 @@ import 'package:spend_controll/modules/auth/controller/login_controller.dart';
 import 'package:spend_controll/modules/auth/login_module.dart';
 import 'package:spend_controll/modules/create_user/create_user_module.dart';
 import 'package:spend_controll/modules/forgotPassword/forgot_password_module.dart';
-import 'package:spend_controll/modules/grupo/register_module.dart';
+import 'package:spend_controll/modules/group/group_module.dart';
 import 'package:spend_controll/modules/home/home_module.dart';
 
 class AppModule extends Module {
@@ -21,7 +21,7 @@ class AppModule extends Module {
   List<ModularRoute> get routes => [
         ModuleRoute('/', module: LoginModule()),
         ModuleRoute('/home', module: HomeModule()),
-        ModuleRoute('/grupo', module: RegisterModule()),
+        ModuleRoute('/grupo', module: GroupModule()),
         ModuleRoute('/create_user', module: CreateUserModule()),
         ModuleRoute('/forgot_password', module: ForgotPasswordModule()),
       ];
