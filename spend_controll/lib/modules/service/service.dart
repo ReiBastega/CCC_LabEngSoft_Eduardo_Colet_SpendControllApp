@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:spend_controll/modules/Groups/model/group_model.dart';
 import 'package:spend_controll/modules/expense/expense_model.dart';
-import 'package:spend_controll/modules/group/model/group_model.dart';
 
 class Service {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;
 
   // Obtém o ID do usuário logado
   String? getCurrentUserId() {
-    return _auth.currentUser?.uid;
+    return auth.currentUser?.uid;
   }
 
   // --- Group Management ---
@@ -21,15 +21,16 @@ class Service {
       throw Exception("Usuário não autenticado.");
     }
 
-    final newGroupRef = _firestore.collection('groups').doc();
+    final newGroupRef = firestore.collection('groups').doc();
     final group = Group(
       id: newGroupRef.id,
       name: groupName,
       adminUserId: userId,
-      memberUserIds: [userId], // O criador é o primeiro membro e admin
-      createdAt: Timestamp.now(), balance: 0.0, // Inicializa o saldo como 0
-      memberCount: 1, // Inicializa com 1 membro (o criador)
-      isPositive: true, // Inicializa como positivo
+      memberUserIds: [userId],
+      createdAt: Timestamp.now(),
+      balance: 0.0,
+      memberCount: 1,
+      isPositive: true,
     );
 
     await newGroupRef.set(group.toFirestore());
@@ -43,10 +44,10 @@ class Service {
     throw UnimplementedError(
         "Busca de usuário por email não implementada no Service.");
     // Exemplo de como seria:
-    // QuerySnapshot userQuery = await _firestore.collection('users').where('email', isEqualTo: userEmail).limit(1).get();
+    // QuerySnapshot userQuery = await firestore.collection('users').where('email', isEqualTo: userEmail).limit(1).get();
     // if (userQuery.docs.isEmpty) { throw Exception("Usuário não encontrado com o email fornecido."); }
     // String userIdToAdd = userQuery.docs.first.id;
-    // await _firestore.collection('groups').doc(groupId).update({
+    // await firestore.collection('groups').doc(groupId).update({
     //   'memberUserIds': FieldValue.arrayUnion([userIdToAdd]),
     // });
   }
@@ -60,7 +61,7 @@ class Service {
     }
     // TODO: Adicionar verificação se o usuário atual é admin
     // TODO: Adicionar verificação para não remover o admin
-    await _firestore.collection('groups').doc(groupId).update({
+    await firestore.collection('groups').doc(groupId).update({
       'memberUserIds': FieldValue.arrayRemove([userIdToRemove]),
     });
   }
@@ -72,7 +73,7 @@ class Service {
       return Stream.value([]); // Retorna stream vazia se não logado
     }
 
-    return _firestore
+    return firestore
         .collection('groups')
         .where('memberUserIds', arrayContains: userId)
         .snapshots()
@@ -111,7 +112,7 @@ class Service {
         createdByUserId: userId // Garante que o criador é o usuário logado
         );
 
-    await _firestore
+    await firestore
         .collection('groups')
         .doc(expense.groupId)
         .collection('expenses')
@@ -130,7 +131,7 @@ class Service {
       throw Exception("ID da despesa ou do grupo inválido para atualização.");
     }
 
-    await _firestore
+    await firestore
         .collection('groups')
         .doc(expense.groupId)
         .collection('expenses')
@@ -149,7 +150,7 @@ class Service {
     if (expenseId.isEmpty || groupId.isEmpty) {
       throw Exception("ID da despesa ou do grupo inválido para exclusão.");
     }
-    await _firestore
+    await firestore
         .collection('groups')
         .doc(groupId)
         .collection('expenses')
@@ -168,7 +169,7 @@ class Service {
       return Stream.error("ID do grupo inválido.");
     }
 
-    return _firestore
+    return firestore
         .collection('groups')
         .doc(groupId)
         .collection('expenses')
@@ -180,5 +181,23 @@ class Service {
     });
   }
 
-  // --- Outros métodos de serviço (Auth, User, etc.) podem ser adicionados aqui ---
+  // --- Transaction Management ---
+  Future<void> addTransaction({
+    required String description,
+    required double amount,
+    required String type,
+    required String groupId,
+    required String groupName,
+  }) async {
+    final userId = auth.currentUser!.uid;
+    await firestore.collection('transactions').add({
+      'userId': userId,
+      'description': description,
+      'amount': amount,
+      'type': type,
+      'groupId': groupId,
+      'groupName': groupName,
+      'date': FieldValue.serverTimestamp(),
+    });
+  }
 }

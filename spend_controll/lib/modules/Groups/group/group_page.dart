@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spend_controll/modules/group/Controller/group_controller.dart';
-import 'package:spend_controll/modules/group/Controller/group_state.dart';
-import 'package:spend_controll/shared/widgets/appBar.dart'; // Assuming AppBarWidget exists
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:spend_controll/modules/Groups/group/Controller/group_controller.dart';
+import 'package:spend_controll/modules/Groups/group/Controller/group_state.dart';
+import 'package:spend_controll/shared/widgets/appBar.dart';
 
 class GroupListPage extends StatefulWidget {
   final GroupController groupController;
-
-  const GroupListPage({super.key, required this.groupController});
+  const GroupListPage({
+    super.key,
+    required this.groupController,
+  });
 
   @override
   State<GroupListPage> createState() => _GroupListPageState();
@@ -49,7 +52,6 @@ class _GroupListPageState extends State<GroupListPage> {
                   groupNameController.clear();
                   Navigator.of(dialogContext).pop();
                 } else {
-                  // Optional: Show validation message inside the dialog
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                         content: Text('Nome do grupo não pode ser vazio.')),
@@ -67,7 +69,6 @@ class _GroupListPageState extends State<GroupListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppBarWidget(pageTitle: 'Meus Grupos'),
-      // drawer: const DrawerWidget(), // Assuming DrawerWidget exists
       body: BlocConsumer<GroupController, GroupState>(
         bloc: widget.groupController,
         listener: (context, state) {
@@ -100,7 +101,6 @@ class _GroupListPageState extends State<GroupListPage> {
             );
           }
 
-          // Display list of groups
           return ListView.builder(
             itemCount: state.groups.length,
             itemBuilder: (context, index) {
@@ -108,20 +108,13 @@ class _GroupListPageState extends State<GroupListPage> {
               return ListTile(
                 title: Text(group.name),
                 subtitle: Text(
-                    'Admin: ${group.adminUserId == widget.groupController.service.getCurrentUserId() ? "Você" : group.adminUserId}'), // Basic admin info
+                    'Admin: ${group.adminUserId == widget.groupController.service.getCurrentUserId() ? "Você" : group.adminUserId}'),
                 trailing: IconButton(
                   icon: const Icon(Icons.arrow_forward_ios),
                   onPressed: () {
-                    // TODO: Navigate to Group Detail Page
-                    // Modular.to.pushNamed('/groups/detail/${group.id}');
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(
-                              'Navegação para detalhes do grupo ${group.id} pendente.')),
-                    );
+                    Modular.to.pushNamed('/groups/detail/${group.id}');
                   },
                 ),
-                // TODO: Add long press for options like leave/delete if needed
               );
             },
           );

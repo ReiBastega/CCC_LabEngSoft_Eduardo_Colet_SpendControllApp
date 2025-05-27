@@ -21,14 +21,12 @@ class Group {
     required this.isPositive,
   });
 
-  // Método para converter um DocumentSnapshot do Firestore em um objeto Group
   factory Group.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Group(
       id: doc.id,
       name: data['name'] ?? '',
       adminUserId: data['adminUserId'] ?? '',
-      // Garante que memberUserIds seja sempre uma lista de strings
       memberUserIds: List<String>.from(data['memberUserIds'] ?? []),
       createdAt: data['createdAt'] ?? Timestamp.now(),
       memberCount: (data['memberUserIds'] as List?)?.length ?? 0,
@@ -37,7 +35,6 @@ class Group {
     );
   }
 
-  // Método para converter um objeto Group em um Map para o Firestore
   Map<String, dynamic> toFirestore() {
     return {
       'name': name,

@@ -2,7 +2,7 @@ import 'dart:async'; // Import for StreamSubscription
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spend_controll/modules/group/Controller/group_state.dart';
+import 'package:spend_controll/modules/Groups/group/Controller/group_state.dart';
 import 'package:spend_controll/modules/service/service.dart';
 
 class GroupController extends Cubit<GroupState> {

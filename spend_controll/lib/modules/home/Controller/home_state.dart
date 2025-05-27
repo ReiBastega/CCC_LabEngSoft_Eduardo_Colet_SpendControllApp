@@ -1,4 +1,4 @@
-import 'package:spend_controll/modules/group/model/group_model.dart';
+import 'package:spend_controll/modules/Groups/model/group_model.dart';
 import 'package:spend_controll/modules/transaction/controller/transaction_model.dart';
 
 enum HomeStatus { initial, loading, failure, success }

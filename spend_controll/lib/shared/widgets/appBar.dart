@@ -2,7 +2,6 @@ library stara_widgets;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:spend_controll/shared/widgets/colors_app.dart';
 
 class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final String? pageTitle;
@@ -47,11 +46,8 @@ class AppBarWidget extends StatelessWidget implements PreferredSizeWidget {
       leading: showReturn
           ? IconButton(
               splashColor: Colors.transparent,
-              icon: SvgPicture.asset(
-                'assets/icons/ic_back.svg',
-                height: 14,
-                colorFilter: ColorFilter.mode(
-                    AppColors.of(context).foreground1st, BlendMode.srcIn),
+              icon: const Icon(
+                Icons.arrow_back_ios_new,
               ),
               onPressed: customLeading
                   ? () => customLeadingFunction!()

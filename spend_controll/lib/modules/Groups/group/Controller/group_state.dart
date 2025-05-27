@@ -1,4 +1,4 @@
-import 'package:spend_controll/modules/group/model/group_model.dart';
+import 'package:spend_controll/modules/Groups/model/group_model.dart';
 
 enum GroupStatus { initial, loading, loaded, error, success }
 

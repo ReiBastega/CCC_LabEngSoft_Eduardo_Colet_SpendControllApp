@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:spend_controll/modules/auth/controller/login_controller.dart';
 import 'package:spend_controll/modules/home/controller/home_controller.dart';
+import 'package:spend_controll/modules/home/controller/home_state.dart';
 import 'package:spend_controll/shared/widgets/balance_card_widget.dart';
 import 'package:spend_controll/shared/widgets/financial_summary_widget.dart';
 import 'package:spend_controll/shared/widgets/group_list_widget.dart';
@@ -32,50 +34,93 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SpendControl'),
+        title: const Text('Spend controll'),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
-              // Navegar para tela de notificações
-              Modular.to.pushNamed('/notifications');
+              Modular.to.pushNamed('/notifications/');
             },
           ),
           IconButton(
             icon: const Icon(Icons.person_outline),
             onPressed: () {
-              // Navegar para tela de perfil
-              Modular.to.pushNamed('/profile');
+              Modular.to.pushNamed('/profile/');
             },
           ),
         ],
       ),
-      body: AnimatedBuilder(
-        animation: widget.homeController,
+      body: BlocBuilder<HomeController, HomeState>(
+        bloc: widget.homeController,
         builder: (context, state) {
-          if (widget.homeController.state.isLoading) {
+          // Loading
+          if (state.status == HomeStatus.loading || state.isLoading) {
             return _buildLoadingState();
           }
-
-          if (widget.homeController.state.hasError) {
+          // Error
+          if (state.status == HomeStatus.failure || state.hasError) {
             return _buildErrorState();
           }
-
-          if (!widget.homeController.state.isAuthenticated) {
-            // Redirecionar para login
-            Future.microtask(() => Modular.to.navigate('/auth/login'));
+          // Não autenticado
+          if (!state.isAuthenticated) {
+            Future.microtask(() => Modular.to.navigate('/'));
             return Container();
           }
-
-          if (widget.homeController.state.groups.isEmpty) {
+          // Sem grupos ainda
+          if (state.groups.isEmpty) {
             return _buildEmptyState();
           }
 
-          return _buildLoadedState();
+          return RefreshIndicator(
+            onRefresh: () => widget.homeController.loadUserData(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 1) Saudação personalizada
+                    Text(
+                      'Olá, ${state.userName?.isNotEmpty == true ? state.userName : 'Usuário'}!',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 8),
+
+                    // 2) Em quais grupos ele participa
+                    Text(
+                      'Você participa de ${state.groups.length} grupo(s):',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    const SizedBox(height: 8),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
+                      children: state.groups.map((g) {
+                        return ActionChip(
+                          label: Text(g.name),
+                          onPressed: () {
+                            // Navegar para detalhes do grupo
+                            Modular.to.pushNamed('/groups/detail/${g.id}');
+                          },
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 24),
+                    // 3) O resto do seu layout (_buildLoadedState)
+                    BalanceCardWidget(
+                      totalBalance: state.totalBalance,
+                      onTap: () => Modular.to.pushNamed('/balance-details'),
+                    ),
+                    const SizedBox(height: 24)
+                  ]),
+            ),
+          );
         },
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: 0, // Home selecionado por padrão
+        currentIndex: 0,
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
@@ -100,21 +145,20 @@ class _HomePageState extends State<HomePage> {
           ),
         ],
         onTap: (index) {
-          // Navegar para as diferentes seções do app
           switch (index) {
-            case 0: // Home - já estamos aqui
+            case 0:
               break;
-            case 1: // Grupos
-              Modular.to.pushNamed('/groups');
+            case 1:
+              Modular.to.pushNamed('/groups/group/');
               break;
-            case 2: // Transações
-              Modular.to.pushNamed('/transactions');
+            case 2:
+              Modular.to.pushNamed('/transactions/');
               break;
-            case 3: // Relatórios
-              Modular.to.pushNamed('/reports');
+            case 3:
+              Modular.to.pushNamed('/reports/');
               break;
-            case 4: // Perfil
-              Modular.to.pushNamed('/profile');
+            case 4:
+              Modular.to.pushNamed('/profile/');
               break;
           }
         },
@@ -188,7 +232,6 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              // Navegar para criação de grupo
               Modular.to.pushNamed('/groups/create');
             },
             style: ElevatedButton.styleFrom(

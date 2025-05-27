@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:spend_controll/modules/group/model/group_model.dart';
+import 'package:spend_controll/modules/Groups/model/group_model.dart';
 
 class GroupListWidget extends StatelessWidget {
   final List<Group> groups;
