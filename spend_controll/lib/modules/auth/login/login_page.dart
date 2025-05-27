@@ -37,7 +37,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: const AppBarWidget(
-        pageTitle: 'Login',
         showReturn: false,
       ),
       body: BlocConsumer<LoginController, LoginState>(

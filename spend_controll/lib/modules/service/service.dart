@@ -12,6 +12,40 @@ class Service {
     return auth.currentUser?.uid;
   }
 
+  Future<void> logout() async {
+    await auth.signOut();
+  }
+
+  Future<void> deleteAccount() async {
+    final user = auth.currentUser;
+    if (user == null) {
+      return;
+    }
+
+    try {
+      await firestore.collection('users').doc(user.uid).delete();
+
+      await user.delete();
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        throw Exception(
+            "É necessário fazer login novamente para excluir a conta.");
+      } else {
+        throw Exception("Erro ao excluir conta: ${e.message}");
+      }
+    } catch (e) {
+      throw Exception("Erro ao excluir conta: $e");
+    }
+  }
+
+  Future<Map<String, dynamic>?> getUserData(String userId) async {
+    final doc = await firestore.collection('users').doc(userId).get();
+    if (doc.exists) {
+      return doc.data();
+    }
+    return null;
+  }
+
   // --- Group Management ---
 
   // Cria um novo grupo no Firestore

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:spend_controll/modules/auth/controller/login_controller.dart';
+import 'package:spend_controll/modules/auth/login/controller/login_controller.dart';
 import 'package:spend_controll/modules/home/controller/home_controller.dart';
 import 'package:spend_controll/modules/home/controller/home_state.dart';
 import 'package:spend_controll/shared/widgets/balance_card_widget.dart';
@@ -80,7 +80,6 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 1) Saudação personalizada
                     Text(
                       'Olá, ${state.userName?.isNotEmpty == true ? state.userName : 'Usuário'}!',
                       style: Theme.of(context).textTheme.headlineSmall,

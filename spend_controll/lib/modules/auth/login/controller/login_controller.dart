@@ -49,11 +49,6 @@ class LoginController extends Cubit<LoginState> {
     }
   }
 
-  Future<void> logout() async {
-    await auth.signOut();
-    emit(const LoginState.initial());
-  }
-
   bool isLogged() {
     try {
       var currentUser = auth.currentUser;

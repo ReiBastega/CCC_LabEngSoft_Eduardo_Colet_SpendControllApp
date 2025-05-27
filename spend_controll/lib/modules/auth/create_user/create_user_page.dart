@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:spend_controll/modules/create_user/controller/create_user_controller.dart';
+import 'package:spend_controll/modules/auth/create_user/controller/create_user_controller.dart';
 import 'package:spend_controll/shared/widgets/button.dart';
 import 'package:spend_controll/shared/widgets/form_input_and_title.dart';
 

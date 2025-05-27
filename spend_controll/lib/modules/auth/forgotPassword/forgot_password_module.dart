@@ -1,6 +1,6 @@
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:spend_controll/modules/forgotPassword/controller/forgot_password_controller.dart';
-import 'package:spend_controll/modules/forgotPassword/forgot_password_page.dart';
+import 'package:spend_controll/modules/auth/forgotPassword/controller/forgot_password_controller.dart';
+import 'package:spend_controll/modules/auth/forgotPassword/forgot_password_page.dart';
 
 class ForgotPasswordModule extends Module {
   @override
