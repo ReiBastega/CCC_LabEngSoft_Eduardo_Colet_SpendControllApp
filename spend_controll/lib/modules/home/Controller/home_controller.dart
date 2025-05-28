@@ -110,6 +110,7 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
           .where('userId', isEqualTo: user.uid)
           .where('date', isGreaterThanOrEqualTo: startOfMonth)
           .where('date', isLessThanOrEqualTo: endOfMonth)
+          .orderBy('date')
           .get();
 
       final Map<String, double> monthlySummary = {

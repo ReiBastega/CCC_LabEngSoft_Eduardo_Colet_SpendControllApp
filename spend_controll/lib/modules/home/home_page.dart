@@ -49,6 +49,9 @@ class _HomePageState extends State<HomePage> {
           if (state.groups.isEmpty) {
             return _buildEmptyState();
           }
+          // if (state.status == HomeStatus.success) {
+          //   return _buildLoadedState();
+          // }
 
           return RefreshIndicator(
             onRefresh: () => widget.homeController.loadUserData(),
@@ -76,7 +79,6 @@ class _HomePageState extends State<HomePage> {
                     ),
                     const SizedBox(height: 8),
 
-                    // 2) Em quais grupos ele participa
                     Text(
                       'Você participa de ${state.groups.length} grupo(s):',
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -243,13 +245,6 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Seção de Saudação e Resumo
-            Text(
-              'Olá, ${widget.homeController.state.userName ?? "Usuário"}',
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 16),
-
             // Card de Saldo Total
             BalanceCardWidget(
               totalBalance: widget.homeController.state.totalBalance,
