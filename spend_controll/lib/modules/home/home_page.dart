@@ -49,9 +49,9 @@ class _HomePageState extends State<HomePage> {
           if (state.groups.isEmpty) {
             return _buildEmptyState();
           }
-          // if (state.status == HomeStatus.success) {
-          //   return _buildLoadedState();
-          // }
+          if (state.status == HomeStatus.success) {
+            return _buildLoadedState();
+          }
 
           return RefreshIndicator(
             onRefresh: () => widget.homeController.loadUserData(),
