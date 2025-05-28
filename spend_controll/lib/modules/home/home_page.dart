@@ -33,41 +33,19 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Spend controll'),
-        centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {
-              Modular.to.pushNamed('/notifications/');
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.person_outline),
-            onPressed: () {
-              Modular.to.pushNamed('/profile/');
-            },
-          ),
-        ],
-      ),
       body: BlocBuilder<HomeController, HomeState>(
         bloc: widget.homeController,
         builder: (context, state) {
-          // Loading
           if (state.status == HomeStatus.loading || state.isLoading) {
             return _buildLoadingState();
           }
-          // Error
           if (state.status == HomeStatus.failure || state.hasError) {
             return _buildErrorState();
           }
-          // Não autenticado
           if (!state.isAuthenticated) {
             Future.microtask(() => Modular.to.navigate('/'));
             return Container();
           }
-          // Sem grupos ainda
           if (state.groups.isEmpty) {
             return _buildEmptyState();
           }
@@ -76,13 +54,25 @@ class _HomePageState extends State<HomePage> {
             onRefresh: () => widget.homeController.loadUserData(),
             child: SingleChildScrollView(
               physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.only(
+                  top: 56, bottom: 32, left: 24, right: 24),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Olá, ${state.userName?.isNotEmpty == true ? state.userName : 'Usuário'}!',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Olá, ${state.userName?.isNotEmpty == true ? state.userName : 'Usuário'}!',
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.notifications_outlined),
+                          onPressed: () {
+                            Modular.to.pushNamed('/notifications/');
+                          },
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 8),
 
@@ -99,7 +89,6 @@ class _HomePageState extends State<HomePage> {
                         return ActionChip(
                           label: Text(g.name),
                           onPressed: () {
-                            // Navegar para detalhes do grupo
                             Modular.to.pushNamed('/groups/detail/${g.id}');
                           },
                         );
@@ -120,6 +109,7 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 0,
+        backgroundColor: const Color.fromARGB(255, 199, 177, 236),
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
@@ -165,7 +155,6 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          // Mostrar menu de opções para adicionar transações
           _showAddTransactionMenu(context);
         },
       ),

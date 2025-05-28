@@ -247,7 +247,7 @@ class _ProfilePageState extends State<ProfilePage> {
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              '© 2025 Spend Controll',
+              '© 2025 Spend Controll - Version 1.0',
               style: TextStyle(
                 color: Colors.deepPurple,
               ),

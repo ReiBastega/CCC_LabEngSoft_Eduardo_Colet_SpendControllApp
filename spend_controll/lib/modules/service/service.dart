@@ -1,13 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
-import 'package:spend_controll/modules/expense/expense_model.dart';
+import 'package:spend_controll/modules/expense/model/expense_model.dart';
 
 class Service {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
 
-  // Obtém o ID do usuário logado
   String? getCurrentUserId() {
     return auth.currentUser?.uid;
   }

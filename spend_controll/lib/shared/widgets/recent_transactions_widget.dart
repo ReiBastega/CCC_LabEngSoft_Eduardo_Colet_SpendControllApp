@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:spend_controll/modules/transaction/controller/transaction_model.dart';
+import 'package:spend_controll/modules/Groups/model/transaction_model.dart';
 
 class RecentTransactionsWidget extends StatelessWidget {
   final List<Transaction> transactions;

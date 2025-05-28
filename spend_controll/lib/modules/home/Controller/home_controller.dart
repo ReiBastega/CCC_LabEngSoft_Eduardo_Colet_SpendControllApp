@@ -3,9 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
+import 'package:spend_controll/modules/Groups/model/transaction_model.dart'
+    as transaction_model;
 import 'package:spend_controll/modules/home/controller/home_state.dart';
 import 'package:spend_controll/modules/service/service.dart';
-import 'package:spend_controll/modules/transaction/controller/transaction_model.dart';
 
 class HomeController extends Cubit<HomeState> implements ChangeNotifier {
   final Service service;
@@ -78,27 +79,25 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
         );
       }).toList();
 
-      final transactionsSnapshot = [];
-      // await firestore
-      //     .collection('transactions')
-      //     .where('userId', isEqualTo: user.uid)
-      //     .orderBy('date', descending: true)
-      //     .limit(5)
-      //     .get();
+      final transactionsSnapshot = await firestore
+          .collection('transactions')
+          .where('userId', isEqualTo: user.uid)
+          .orderBy('date', descending: true)
+          .limit(5)
+          .get();
 
-      final transactions = [];
-      //  transactionsSnapshot.docs.map((doc) {
-      //   final data = doc.data();
-      //   return transaction_model.Transaction(
-      //     id: doc.id,
-      //     description: data['description'] ?? 'Sem descrição',
-      //     amount: (data['amount'] ?? 0.0).toDouble(),
-      //     date: (data['date'] as Timestamp?)?.toDate() ?? DateTime.now(),
-      //     type: _getTransactionType(data['type']),
-      //     groupId: data['groupId'] ?? '',
-      //     groupName: data['groupName'] ?? 'Grupo',
-      //   );
-      // }).toList();
+      final transactions = transactionsSnapshot.docs.map((doc) {
+        final data = doc.data();
+        return transaction_model.Transaction(
+          id: doc.id,
+          description: data['description'] ?? 'Sem descrição',
+          amount: (data['amount'] ?? 0.0).toDouble(),
+          date: (data['date'] as Timestamp?)?.toDate() ?? DateTime.now(),
+          type: _getTransactionType(data['type']),
+          groupId: data['groupId'] ?? '',
+          groupName: data['groupName'] ?? 'Grupo',
+        );
+      }).toList();
 
       double totalBalance = groups.fold(0.0, (sum, g) => sum + g.balance);
 
@@ -106,25 +105,22 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
       final startOfMonth = DateTime(now.year, now.month, 1);
       final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
 
-      final monthlySummarySnapshot = [];
-
-      // await firestore
-      //     .collection('transactions')
-      //     .where('userId', isEqualTo: user.uid)
-      //     .where('date', isGreaterThanOrEqualTo: startOfMonth)
-      //     .where('date', isLessThanOrEqualTo: endOfMonth)
-      //     .get();
+      final monthlySummarySnapshot = await firestore
+          .collection('transactions')
+          .where('userId', isEqualTo: user.uid)
+          .where('date', isGreaterThanOrEqualTo: startOfMonth)
+          .where('date', isLessThanOrEqualTo: endOfMonth)
+          .get();
 
       final Map<String, double> monthlySummary = {
         'income': 0.0,
         'expense': 0.0,
       };
-      for (final doc in monthlySummarySnapshot) {
-        //monthlySummarySnapshot.docs)
+      for (final doc in monthlySummarySnapshot.docs) {
         final data = doc.data();
         final amount = (data['amount'] ?? 0.0).toDouble();
         final type = _getTransactionType(data['type']);
-        if (type == TransactionType.income) {
+        if (type == transaction_model.TransactionType.income) {
           monthlySummary['income'] = (monthlySummary['income']! + amount);
         } else {
           monthlySummary['expense'] = (monthlySummary['expense']! + amount);
@@ -147,16 +143,16 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
     }
   }
 
-  TransactionType _getTransactionType(String? type) {
+  transaction_model.TransactionType _getTransactionType(String? type) {
     switch (type) {
       case 'income':
-        return TransactionType.income;
+        return transaction_model.TransactionType.income;
       case 'expense':
-        return TransactionType.expense;
+        return transaction_model.TransactionType.expense;
       case 'transfer':
-        return TransactionType.transfer;
+        return transaction_model.TransactionType.transfer;
       default:
-        return TransactionType.expense;
+        return transaction_model.TransactionType.expense;
     }
   }
 
