@@ -222,7 +222,7 @@ class _HomePageState extends State<HomePage> {
           const SizedBox(height: 24),
           ElevatedButton(
             onPressed: () {
-              Modular.to.pushNamed('/groups/create');
+              Modular.to.pushNamed('/groups/group/');
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -241,21 +241,36 @@ class _HomePageState extends State<HomePage> {
       },
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
-        padding: const EdgeInsets.all(16.0),
+        padding:
+            const EdgeInsets.only(left: 24, right: 24, bottom: 32, top: 72),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Card de Saldo Total
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Olá, ${widget.homeController.state.userName?.isNotEmpty == true ? widget.homeController.state.userName : 'Usuário'}!',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.notifications_outlined),
+                  onPressed: () {
+                    Modular.to.pushNamed('/notifications/');
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 24),
+
             BalanceCardWidget(
               totalBalance: widget.homeController.state.totalBalance,
               onTap: () {
-                // Navegar para detalhes do saldo
                 Modular.to.pushNamed('/balance-details');
               },
             ),
             const SizedBox(height: 24),
 
-            // Seção de Grupos
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -265,7 +280,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    // Navegar para lista completa de grupos
                     Modular.to.pushNamed('/groups');
                   },
                   child: const Text('Ver Todos'),
@@ -276,13 +290,10 @@ class _HomePageState extends State<HomePage> {
             GroupListWidget(
               groups: widget.homeController.state.groups,
               onGroupTap: (group) {
-                // Navegar para detalhes do grupo
                 Modular.to.pushNamed('/groups/${group.id}');
               },
             ),
             const SizedBox(height: 24),
-
-            // Seção de Transações Recentes
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -292,7 +303,6 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    // Navegar para lista completa de transações
                     Modular.to.pushNamed('/transactions');
                   },
                   child: const Text('Ver Todas'),
@@ -303,7 +313,6 @@ class _HomePageState extends State<HomePage> {
             RecentTransactionsWidget(
               transactions: widget.homeController.state.recentTransactions,
               onTransactionTap: (transaction) {
-                // Navegar para detalhes da transação
                 Modular.to.pushNamed('/transactions/${transaction.id}');
               },
             ),
@@ -331,14 +340,19 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 8),
             QuickActionsWidget(
-              onActionTap: (action) {
+              onActionTap: (action) async {
                 // Navegar para a ação selecionada
                 switch (action) {
                   case QuickAction.addExpense:
                     Modular.to.pushNamed('/transactions/add-expense/');
                     break;
                   case QuickAction.addIncome:
-                    Modular.to.pushNamed('/transactions/add-income/');
+                    // Modular.to.pushNamed('/transactions/add-income/');
+                    final changed = await Modular.to
+                        .pushNamed<bool>('/transactions/add-income');
+                    if (changed == true) {
+                      await widget.homeController.loadUserData();
+                    }
                     break;
                   case QuickAction.transfer:
                     Modular.to.pushNamed('/transactions/transfer/');

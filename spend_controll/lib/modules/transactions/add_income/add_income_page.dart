@@ -18,7 +18,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
   final _observationController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
-  String? _selectedGroupId;
+  // String? _selectedGroupId;
   String? _selectedCategory;
 
   final AddIncomeController controller = Modular.get<AddIncomeController>();
@@ -26,7 +26,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
   @override
   void initState() {
     super.initState();
-    controller.loadGroups();
   }
 
   @override
@@ -46,39 +45,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
       body: AnimatedBuilder(
         animation: controller,
         builder: (context, _) {
-          if (controller.state.isLoading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (controller.state.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.error_outline,
-                    color: Colors.red,
-                    size: 48,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Erro ao carregar dados',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(controller.state.errorMessage ?? 'Erro desconhecido'),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: controller.loadGroups,
-                    child: const Text('Tentar Novamente'),
-                  ),
-                ],
-              ),
-            );
-          }
-
           return _buildForm();
         },
       ),
@@ -158,34 +124,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
                 DateFormat('dd/MM/yyyy').format(_selectedDate),
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-
-          // Grupo
-          DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              labelText: 'Grupo',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.group),
-            ),
-            value: _selectedGroupId,
-            items: controller.state.groups.map((group) {
-              return DropdownMenuItem<String>(
-                value: group.id,
-                child: Text(group.name),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedGroupId = value;
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor, selecione um grupo';
-              }
-              return null;
-            },
           ),
           const SizedBox(height: 16),
 
@@ -272,22 +210,14 @@ class _AddIncomePageState extends State<AddIncomePage> {
 
   void _saveIncome() async {
     if (_formKey.currentState!.validate()) {
-      // Formatar valor para double
       final cleanValue =
           _amountController.text.replaceAll('.', '').replaceAll(',', '.');
       final amount = double.parse(cleanValue);
-
-      // Encontrar nome do grupo selecionado
-      final selectedGroup = controller.state.groups.firstWhere(
-        (group) => group.id == _selectedGroupId,
-      );
 
       final result = await controller.saveIncome(
         description: _descriptionController.text,
         amount: amount,
         date: _selectedDate,
-        groupId: _selectedGroupId!,
-        groupName: selectedGroup.name,
         category: _selectedCategory,
         observation: _observationController.text,
       );
@@ -299,7 +229,7 @@ class _AddIncomePageState extends State<AddIncomePage> {
             backgroundColor: Colors.green,
           ),
         );
-        Modular.to.pop();
+        Modular.to.pop(true);
       }
     }
   }

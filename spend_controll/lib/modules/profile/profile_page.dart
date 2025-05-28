@@ -48,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
     if (confirm == true) {
       await widget.profileController.deleteAccount();
-      Navigator.of(context).pushReplacementNamed('/login');
+      Navigator.of(context).pushReplacementNamed('/');
     }
   }
 

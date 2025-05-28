@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:spend_controll/modules/transactions/model/group_model.dart';
 
 import 'add_expense_state.dart';
 
@@ -115,14 +116,4 @@ class AddExpenseController extends ChangeNotifier {
       return false;
     }
   }
-}
-
-class Group {
-  final String id;
-  final String name;
-
-  Group({
-    required this.id,
-    required this.name,
-  });
 }

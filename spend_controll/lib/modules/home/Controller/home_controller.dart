@@ -99,8 +99,21 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
         );
       }).toList();
 
-      double totalBalance = groups.fold(0.0, (sum, g) => sum + g.balance);
+      // soma todas as transações do usuário
+      final allTxSnap = await firestore
+          .collection('transactions')
+          .where('userId', isEqualTo: user.uid)
+          .get();
 
+      double walletBalance = 0.0;
+      for (final tx in allTxSnap.docs) {
+        final data = tx.data();
+        final amount = (data['amount'] ?? 0.0).toDouble();
+        final type = _getTransactionType(data['type']);
+        walletBalance += (type == transaction_model.TransactionType.income)
+            ? amount
+            : -amount;
+      }
       final now = DateTime.now();
       final startOfMonth = DateTime(now.year, now.month, 1);
       final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
@@ -133,7 +146,7 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
         userName: userName,
         groups: groups,
         recentTransactions: transactions,
-        totalBalance: totalBalance,
+        totalBalance: walletBalance,
         monthlySummary: monthlySummary,
       ));
     } catch (e) {

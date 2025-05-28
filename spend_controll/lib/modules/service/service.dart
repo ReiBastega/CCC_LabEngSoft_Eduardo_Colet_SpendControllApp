@@ -17,23 +17,21 @@ class Service {
 
   Future<void> deleteAccount() async {
     final user = auth.currentUser;
-    if (user == null) {
-      return;
-    }
+    if (user == null) return;
 
     try {
-      await firestore.collection('users').doc(user.uid).delete();
-
       await user.delete();
+
+      await firestore.collection('users').doc(user.uid).delete();
     } on FirebaseAuthException catch (e) {
       if (e.code == 'requires-recent-login') {
         throw Exception(
-            "É necessário fazer login novamente para excluir a conta.");
+            "Por favor, faça login novamente para concluir a exclusão da conta.");
       } else {
-        throw Exception("Erro ao excluir conta: ${e.message}");
+        throw Exception("Erro ao excluir conta no Auth: ${e.message}");
       }
     } catch (e) {
-      throw Exception("Erro ao excluir conta: $e");
+      throw Exception("Erro ao excluir dados do usuário: $e");
     }
   }
 

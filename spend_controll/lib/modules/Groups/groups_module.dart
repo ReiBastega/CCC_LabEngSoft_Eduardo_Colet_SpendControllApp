@@ -16,7 +16,7 @@ class GroupsModule extends Module {
 
   @override
   List<ModularRoute> get routes => [
-        ModuleRoute('/group', module: GroupModule()),
-        ModuleRoute('/detail', module: DetailModule()),
+        ModuleRoute('/group/', module: GroupModule()),
+        ModuleRoute('/detail/', module: DetailModule()),
       ];
 }
