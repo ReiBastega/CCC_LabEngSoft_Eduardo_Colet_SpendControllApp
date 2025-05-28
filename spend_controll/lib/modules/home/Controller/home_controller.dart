@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
-import 'package:spend_controll/modules/Groups/model/transaction_model.dart'
-    as transaction_model;
 import 'package:spend_controll/modules/home/controller/home_state.dart';
 import 'package:spend_controll/modules/service/service.dart';
+import 'package:spend_controll/modules/transactions/model/transaction_model.dart'
+    as transaction_model;
 
 class HomeController extends Cubit<HomeState> implements ChangeNotifier {
   final Service service;
@@ -131,7 +131,7 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
         status: HomeStatus.success,
         userName: userName,
         groups: groups,
-        recentTransactions: [], //transactions,
+        recentTransactions: transactions,
         totalBalance: totalBalance,
         monthlySummary: monthlySummary,
       ));

@@ -8,6 +8,7 @@ import 'package:spend_controll/modules/auth/login/controller/login_controller.da
 import 'package:spend_controll/modules/auth/login/login_module.dart';
 import 'package:spend_controll/modules/home/home_module.dart';
 import 'package:spend_controll/modules/profile/profile_module.dart';
+import 'package:spend_controll/modules/transactions/transaction_modules.dart';
 
 class AppModule extends Module {
   @override
@@ -26,5 +27,6 @@ class AppModule extends Module {
         ModuleRoute('/create_user/', module: CreateUserModule()),
         ModuleRoute('/forgot_password/', module: ForgotPasswordModule()),
         ModuleRoute('/profile/', module: ProfileModule()),
+        ModuleRoute('/transactions/', module: TransactionModules()),
       ];
 }

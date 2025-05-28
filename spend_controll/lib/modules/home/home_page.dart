@@ -340,22 +340,22 @@ class _HomePageState extends State<HomePage> {
                 // Navegar para a ação selecionada
                 switch (action) {
                   case QuickAction.addExpense:
-                    Modular.to.pushNamed('/transactions/add-expense');
+                    Modular.to.pushNamed('/transactions/add-expense/');
                     break;
                   case QuickAction.addIncome:
-                    Modular.to.pushNamed('/transactions/add-income');
+                    Modular.to.pushNamed('/transactions/add-income/');
                     break;
                   case QuickAction.transfer:
-                    Modular.to.pushNamed('/transactions/transfer');
+                    Modular.to.pushNamed('/transactions/transfer/');
                     break;
                   case QuickAction.reports:
-                    Modular.to.pushNamed('/reports');
+                    Modular.to.pushNamed('/reports/');
                     break;
                   case QuickAction.settings:
-                    Modular.to.pushNamed('/settings');
+                    Modular.to.pushNamed('/settings/');
                     break;
                   case QuickAction.export:
-                    Modular.to.pushNamed('/export');
+                    Modular.to.pushNamed('/export/');
                     break;
                 }
               },
