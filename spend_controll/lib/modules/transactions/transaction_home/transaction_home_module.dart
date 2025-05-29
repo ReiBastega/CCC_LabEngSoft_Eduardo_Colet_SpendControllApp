@@ -7,7 +7,8 @@ import 'package:spend_controll/modules/transactions/transaction_home/transaction
 class TransactionHomeModules extends Module {
   @override
   List<Bind<Object>> get binds => [
-        Bind.lazySingleton((i) => TransactionHomeController(service: i())),
+        Bind.lazySingleton(
+            (i) => TransactionHomeController(auth: i(), firestore: i())),
         Bind.lazySingleton((i) => Service()),
       ];
 

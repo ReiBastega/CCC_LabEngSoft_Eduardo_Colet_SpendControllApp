@@ -36,10 +36,10 @@ class _HomePageState extends State<HomePage> {
       body: BlocBuilder<HomeController, HomeState>(
         bloc: widget.homeController,
         builder: (context, state) {
-          if (state.status == HomeStatus.loading || state.isLoading) {
+          if (state.status == HomeStatus.loading) {
             return _buildLoadingState();
           }
-          if (state.status == HomeStatus.failure || state.hasError) {
+          if (state.status == HomeStatus.failure) {
             return _buildErrorState();
           }
           if (!state.isAuthenticated) {
@@ -149,12 +149,6 @@ class _HomePageState extends State<HomePage> {
               Modular.to.pushNamed('/profile/');
               break;
           }
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
-        onPressed: () {
-          _showAddTransactionMenu(context);
         },
       ),
     );
@@ -369,60 +363,6 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-    );
-  }
-
-  void _showAddTransactionMenu(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.red,
-                    child: Icon(Icons.remove, color: Colors.white),
-                  ),
-                  title: const Text('Adicionar Despesa'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Modular.to.pushNamed('/transactions/add-expense');
-                  },
-                ),
-                ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.green,
-                    child: Icon(Icons.add, color: Colors.white),
-                  ),
-                  title: const Text('Adicionar Receita'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Modular.to.pushNamed('/transactions/add-income');
-                  },
-                ),
-                ListTile(
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.blue,
-                    child: Icon(Icons.swap_horiz, color: Colors.white),
-                  ),
-                  title: const Text('Transferência'),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Modular.to.pushNamed('/transactions/transfer');
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
     );
   }
 }

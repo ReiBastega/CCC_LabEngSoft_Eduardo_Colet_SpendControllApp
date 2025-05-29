@@ -13,9 +13,6 @@ enum HomeErrorType {
 class HomeState {
   final HomeStatus status;
   final HomeErrorType errorType;
-  final String? errorMessege;
-  final bool isLoading;
-  final bool hasError;
   final String? errorMessage;
   final bool isAuthenticated;
   final String? userName;
@@ -26,9 +23,6 @@ class HomeState {
   const HomeState({
     required this.errorType,
     required this.status,
-    required this.errorMessege,
-    this.isLoading = false,
-    this.hasError = false,
     this.errorMessage,
     this.isAuthenticated = true,
     this.userName,
@@ -41,14 +35,11 @@ class HomeState {
   const HomeState.initial()
       : this(
           status: HomeStatus.initial,
-          errorMessege: '',
           errorMessage: '',
           groups: const [],
           recentTransactions: const [],
           totalBalance: 0.0,
           monthlySummary: const {},
-          isLoading: false,
-          hasError: false,
           isAuthenticated: true,
           userName: '',
           errorType: HomeErrorType.initial,
@@ -56,9 +47,6 @@ class HomeState {
 
   List<Object?> get props => [
         status,
-        errorMessege,
-        isLoading,
-        hasError,
         errorMessage,
         isAuthenticated,
         userName,
@@ -72,8 +60,6 @@ class HomeState {
   HomeState copyWith({
     HomeStatus? status,
     String? errorMessege,
-    bool? isLoading,
-    bool? hasError,
     String? errorMessage,
     bool? isAuthenticated,
     String? userName,
@@ -85,9 +71,6 @@ class HomeState {
   }) {
     return HomeState(
       status: status ?? this.status,
-      errorMessege: errorMessege ?? this.errorMessege,
-      isLoading: isLoading ?? this.isLoading,
-      hasError: hasError ?? this.hasError,
       errorMessage: errorMessage ?? this.errorMessage,
       isAuthenticated: isAuthenticated ?? this.isAuthenticated,
       userName: userName ?? this.userName,
