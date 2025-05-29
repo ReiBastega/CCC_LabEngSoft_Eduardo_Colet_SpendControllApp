@@ -140,7 +140,7 @@ class _HomePageState extends State<HomePage> {
               Modular.to.pushNamed('/groups/group/');
               break;
             case 2:
-              Modular.to.pushNamed('/transactions/');
+              Modular.to.pushNamed('/transactions/transaction_home/');
               break;
             case 3:
               Modular.to.pushNamed('/reports/');
