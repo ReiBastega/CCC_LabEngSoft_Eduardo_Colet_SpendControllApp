@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:spend_controll/modules/transactions/model/group_model.dart';
 import 'package:spend_controll/modules/transactions/model/transaction_model.dart';
@@ -26,7 +27,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
   @override
   void initState() {
     super.initState();
-    controller.loadTransactions();
+    widget.controller.loadTransactions();
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels >=
@@ -46,51 +47,55 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Transações'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              _showSearchDialog();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.filter_list),
-            onPressed: () {
-              _showFilterBottomSheet();
-            },
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () async {
-          await controller.refreshTransactions();
-        },
-        child: AnimatedBuilder(
-          animation: controller,
-          builder: (context, _) {
-            if (controller.state.isLoading &&
-                controller.state.transactions.isEmpty) {
-              return const TransactionLoadingWidget();
-            }
+    return BlocBuilder(
+        bloc: widget.controller,
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              title: const Text('Transações'),
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.search),
+                  onPressed: () {
+                    _showSearchDialog();
+                  },
+                ),
+                IconButton(
+                  icon: const Icon(Icons.filter_list),
+                  onPressed: () {
+                    _showFilterBottomSheet();
+                  },
+                ),
+              ],
+            ),
+            body: RefreshIndicator(
+              onRefresh: () async {
+                await widget.controller.refreshTransactions();
+              },
+              child: AnimatedBuilder(
+                animation: controller,
+                builder: (context, state) {
+                  if (controller.state.isLoading &&
+                      controller.state.transactions.isEmpty) {
+                    return const TransactionLoadingWidget();
+                  }
 
-            if (controller.state.hasError &&
-                controller.state.transactions.isEmpty) {
-              return _buildErrorState();
-            }
+                  if (controller.state.hasError &&
+                      controller.state.transactions.isEmpty) {
+                    return _buildErrorState();
+                  }
 
-            if (controller.state.transactions.isEmpty) {
-              return const TransactionEmptyState();
-            }
+                  if (controller.state.transactions.isEmpty) {
+                    return const TransactionEmptyState();
+                  }
 
-            return _buildTransactionsList();
-          },
-        ),
-      ),
-      floatingActionButton: _buildFloatingActionButton(),
-    );
+                  return _buildTransactionsList();
+                },
+              ),
+            ),
+            floatingActionButton: _buildFloatingActionButton(),
+          );
+        });
   }
 
   Widget _buildTransactionsList() {

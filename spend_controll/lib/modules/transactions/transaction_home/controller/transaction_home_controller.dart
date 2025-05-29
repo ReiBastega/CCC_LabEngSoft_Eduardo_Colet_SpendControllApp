@@ -181,7 +181,7 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
 
     final groupsSnapshot = await firestore
         .collection('groups')
-        .where('members', arrayContains: user.uid)
+        .where('memberUserIds', arrayContains: user.uid)
         .get();
 
     final groups = groupsSnapshot.docs.map((doc) {
