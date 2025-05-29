@@ -16,6 +16,7 @@ class ProfileModule extends Module {
   List<ModularRoute> get routes => [
         ChildRoute('/',
             child: (context, args) => ProfilePage(
+                  homeController: Modular.get(),
                   profileController: Modular.get(),
                 ))
       ];

@@ -78,7 +78,6 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                     const SizedBox(height: 8),
-
                     Text(
                       'Você participa de ${state.groups.length} grupo(s):',
                       style: Theme.of(context).textTheme.bodyMedium,
@@ -96,12 +95,10 @@ class _HomePageState extends State<HomePage> {
                         );
                       }).toList(),
                     ),
-
                     const SizedBox(height: 24),
-                    // 3) O resto do seu layout (_buildLoadedState)
                     BalanceCardWidget(
                       totalBalance: state.totalBalance,
-                      onTap: () => Modular.to.pushNamed('/balance-details'),
+                      onTap: () => Modular.to.pushNamed('/balance-details/'),
                     ),
                     const SizedBox(height: 24)
                   ]),
@@ -266,7 +263,7 @@ class _HomePageState extends State<HomePage> {
             BalanceCardWidget(
               totalBalance: widget.homeController.state.totalBalance,
               onTap: () {
-                Modular.to.pushNamed('/balance-details');
+                Modular.to.pushNamed('/balance-details/');
               },
             ),
             const SizedBox(height: 24),
@@ -280,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Modular.to.pushNamed('/groups');
+                    Modular.to.pushNamed('/groups/group/');
                   },
                   child: const Text('Ver Todos'),
                 ),
@@ -290,7 +287,7 @@ class _HomePageState extends State<HomePage> {
             GroupListWidget(
               groups: widget.homeController.state.groups,
               onGroupTap: (group) {
-                Modular.to.pushNamed('/groups/${group.id}');
+                Modular.to.pushNamed('/groups/detail/${group.id}');
               },
             ),
             const SizedBox(height: 24),
@@ -303,7 +300,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Modular.to.pushNamed('/transactions');
+                    Modular.to.pushNamed('/transactions/');
                   },
                   child: const Text('Ver Todas'),
                 ),
@@ -347,7 +344,6 @@ class _HomePageState extends State<HomePage> {
                     Modular.to.pushNamed('/transactions/add-expense/');
                     break;
                   case QuickAction.addIncome:
-                    // Modular.to.pushNamed('/transactions/add-income/');
                     final changed = await Modular.to
                         .pushNamed<bool>('/transactions/add-income');
                     if (changed == true) {

@@ -1,11 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:spend_controll/modules/home/controller/home_controller.dart';
 import 'package:spend_controll/modules/profile/controller/profile_controller.dart';
 
 class ProfilePage extends StatefulWidget {
   final ProfileController profileController;
-  const ProfilePage({super.key, required this.profileController});
+  final HomeController homeController;
+  const ProfilePage(
+      {super.key,
+      required this.profileController,
+      required this.homeController});
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -48,7 +53,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
     if (confirm == true) {
       await widget.profileController.deleteAccount();
-      Navigator.of(context).pushReplacementNamed('/');
+      Modular.to.pushReplacementNamed('/');
     }
   }
 
@@ -145,17 +150,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 elevation: 4,
                 child: Padding(
                   padding: const EdgeInsets.all(24.0),
-                  child: Column(
+                  child: Row(
                     children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.group, color: Colors.deepPurple),
-                          const SizedBox(width: 10),
-                          Text(
-                            'Grupos Participantes: ${userData!['groups']?.length ?? 0}',
-                            style: const TextStyle(fontSize: 16),
-                          ),
-                        ],
+                      const Icon(Icons.group, color: Colors.deepPurple),
+                      const SizedBox(width: 10),
+                      Text(
+                        'Grupos Participantes: ${widget.homeController.state.groups.length}',
+                        style: const TextStyle(fontSize: 16),
                       ),
                     ],
                   ),
@@ -178,7 +179,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               color: Colors.deepPurple),
                           const SizedBox(width: 10),
                           Text(
-                            'Saldo Total: R\$ ${userData!['totalBalance']?.toStringAsFixed(2) ?? '0.00'}',
+                            'Saldo Total: R\$ ${widget.homeController.state.totalBalance.toStringAsFixed(2)}',
                             style: const TextStyle(fontSize: 16),
                           ),
                         ],
