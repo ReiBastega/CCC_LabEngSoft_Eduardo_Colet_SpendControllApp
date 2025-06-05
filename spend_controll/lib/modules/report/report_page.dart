@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:spend_controll/modules/home/controller/home_controller.dart';
 import 'package:spend_controll/modules/report/controller/report_controller.dart';
+import 'package:spend_controll/shared/widgets/appBar.dart';
 
 class ReportPage extends StatefulWidget {
   final ReportController profileController;
@@ -17,6 +18,12 @@ class ReportPage extends StatefulWidget {
 class _ReportPageState extends State<ReportPage> {
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return const Scaffold(
+        appBar: AppBarWidget(
+          pageTitle: 'Relatório',
+        ),
+        body: Column(
+          children: [],
+        ));
   }
 }
