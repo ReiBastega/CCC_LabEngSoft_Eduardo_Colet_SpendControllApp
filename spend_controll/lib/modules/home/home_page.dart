@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
               Modular.to.pushNamed('/transactions/transaction_home/');
               break;
             case 3:
-              Modular.to.pushNamed('/reports/');
+              Modular.to.pushNamed('/report/');
               break;
             case 4:
               Modular.to.pushNamed('/profile/');
@@ -318,8 +318,7 @@ class _HomePageState extends State<HomePage> {
             FinancialSummaryWidget(
               monthlySummary: widget.homeController.state.monthlySummary,
               onTap: () {
-                // Navegar para relatórios detalhados
-                Modular.to.pushNamed('/reports');
+                Modular.to.pushNamed('/report/');
               },
             ),
             const SizedBox(height: 24),
@@ -348,7 +347,7 @@ class _HomePageState extends State<HomePage> {
                     Modular.to.pushNamed('/transactions/transfer/');
                     break;
                   case QuickAction.reports:
-                    Modular.to.pushNamed('/reports/');
+                    Modular.to.pushNamed('/report/');
                     break;
                   case QuickAction.settings:
                     Modular.to.pushNamed('/settings/');
