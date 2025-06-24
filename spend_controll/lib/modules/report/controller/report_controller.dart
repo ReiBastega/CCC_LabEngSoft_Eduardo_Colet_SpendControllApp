@@ -2,8 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
-import 'package:share_plus/share_plus.dart';
+// import 'package:share_plus/share_plus.dart';
 import 'package:spend_controll/modules/report/model/daily_total.dart';
 
 import '../../transactions/model/group_model.dart';
@@ -412,21 +411,21 @@ class ReportController extends ChangeNotifier {
   //   }
   // }
 
-  Future<void> viewPdf() async {
-    if (_state.pdfPath != null) {
-      await OpenFile.open(_state.pdfPath!);
-    }
-  }
+  // Future<void> viewPdf() async {
+  //   if (_state.pdfPath != null) {
+  //     await OpenFile.open(_state.pdfPath!);
+  //   }
+  // }
 
-  Future<void> sharePdf() async {
-    if (_state.pdfPath != null) {
-      await Share.shareFiles(
-        [_state.pdfPath!],
-        text:
-            'Relatório Financeiro - ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
-      );
-    }
-  }
+  // Future<void> sharePdf() async {
+  //   if (_state.pdfPath != null) {
+  //     await Share.shareFiles(
+  //       [_state.pdfPath!],
+  //       text:
+  //           'Relatório Financeiro - ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
+  //     );
+  //   }
+  // }
 
   String getLargestExpense() {
     if (_state.transactions.isEmpty) {

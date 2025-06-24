@@ -879,36 +879,36 @@ class _ReportPageState extends State<ReportPage>
                       ),
               ),
               const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: OutlinedButton.icon(
-                      onPressed: () {
-                        widget.controller.viewPdf();
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.visibility),
-                      label: const Text('Visualizar'),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        widget.controller.sharePdf();
-                        Navigator.pop(context);
-                      },
-                      icon: const Icon(Icons.share),
-                      label: const Text('Compartilhar'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).primaryColor,
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //   children: [
+              //     Expanded(
+              //       child: OutlinedButton.icon(
+              //         onPressed: () {
+              //           widget.controller.viewPdf();
+              //           Navigator.pop(context);
+              //         },
+              //         icon: const Icon(Icons.visibility),
+              //         label: const Text('Visualizar'),
+              //       ),
+              //     ),
+              //     const SizedBox(width: 16),
+              //     Expanded(
+              //       child: ElevatedButton.icon(
+              //         onPressed: () {
+              //           widget.controller.sharePdf();
+              //           Navigator.pop(context);
+              //         },
+              //         icon: const Icon(Icons.share),
+              //         label: const Text('Compartilhar'),
+              //         style: ElevatedButton.styleFrom(
+              //           backgroundColor: Theme.of(context).primaryColor,
+              //           foregroundColor: Colors.white,
+              //         ),
+              //       ),
+              //     ),
+              //   ],
+              // ),
             ],
           ),
         );
