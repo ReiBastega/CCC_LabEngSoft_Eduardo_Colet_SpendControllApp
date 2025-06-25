@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spend_controll/modules/Groups/invite/controller/group_invite_state.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
 import 'package:spend_controll/modules/service/service.dart';
-import 'package:spend_controll/modules/service/service_extension.dart';
 
 class GroupInviteController extends Cubit<GroupInviteState> {
   final Service service;

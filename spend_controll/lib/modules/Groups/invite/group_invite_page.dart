@@ -5,15 +5,16 @@ import 'package:spend_controll/modules/Groups/invite/controller/group_invite_con
 import 'package:spend_controll/modules/Groups/invite/controller/group_invite_state.dart';
 import 'package:spend_controll/modules/Groups/model/group_invitation_model.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
-import 'package:spend_controll/modules/service/service.dart';
 import 'package:spend_controll/shared/widgets/appBar.dart';
 import 'package:spend_controll/shared/widgets/button.dart';
 
 class GroupInvitePage extends StatefulWidget {
+  final GroupInviteController controller;
   final Group group;
 
   const GroupInvitePage({
     super.key,
+    required this.controller,
     required this.group,
   });
 
@@ -23,22 +24,6 @@ class GroupInvitePage extends StatefulWidget {
 
 class _GroupInvitePageState extends State<GroupInvitePage> {
   final TextEditingController _emailController = TextEditingController();
-  late final GroupInviteController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = GroupInviteController(
-      service: context.read<Service>(),
-      groupId: widget.group.id,
-      group: widget.group,
-    );
-
-    // Carrega convites pendentes ao iniciar
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _controller.loadPendingInvitations();
-    });
-  }
 
   @override
   void dispose() {
@@ -49,7 +34,7 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _controller,
+      value: widget.controller,
       child: BlocConsumer<GroupInviteController, GroupInviteState>(
         listener: (context, state) {
           // Exibe mensagens de erro
@@ -60,7 +45,7 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
                 backgroundColor: Colors.red,
               ),
             );
-            _controller.resetMessages();
+            widget.controller.resetMessages();
           }
 
           // Exibe mensagens de sucesso
@@ -71,12 +56,12 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
                 backgroundColor: Colors.green,
               ),
             );
-            _controller.resetMessages();
+            widget.controller.resetMessages();
 
             // Limpa o campo de email após enviar convite com sucesso
             if (state.inviteStatus == InviteStatus.success) {
               _emailController.clear();
-              _controller.resetSearch();
+              widget.controller.resetSearch();
             }
           }
         },
@@ -139,7 +124,8 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
               onPressed: state.searchStatus == SearchStatus.loading
                   ? null
                   : () {
-                      _controller.searchUserByEmail(_emailController.text);
+                      widget.controller
+                          .searchUserByEmail(_emailController.text);
                     },
               child: state.searchStatus == SearchStatus.loading
                   ? const SizedBox(
@@ -230,7 +216,7 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
                 text: 'Enviar Convite',
                 // isLoading: state.inviteStatus == InviteStatus.loading,
                 onPressed: () {
-                  _controller.sendInvitation(user.email);
+                  widget.controller.sendInvitation(user.email);
                 },
               ),
           ],
@@ -254,7 +240,7 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
             if (state.invitationsStatus == InvitationsStatus.loaded)
               IconButton(
                 icon: const Icon(Icons.refresh),
-                onPressed: () => _controller.loadPendingInvitations(),
+                onPressed: () => widget.controller.loadPendingInvitations(),
                 tooltip: 'Atualizar convites',
               ),
           ],
@@ -305,7 +291,7 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
                   style: TextStyle(color: Colors.red),
                 ),
                 TextButton(
-                  onPressed: () => _controller.loadPendingInvitations(),
+                  onPressed: () => widget.controller.loadPendingInvitations(),
                   child: const Text('Tentar novamente'),
                 ),
               ],
@@ -351,7 +337,7 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              _controller.cancelInvitation(invitation.id);
+              widget.controller.cancelInvitation(invitation.id);
             },
             child: const Text('Sim'),
           ),

@@ -1,5 +1,5 @@
 import 'package:spend_controll/modules/Groups/model/group_invitation_model.dart';
-import 'package:spend_controll/modules/service/service_extension.dart';
+import 'package:spend_controll/modules/service/service.dart';
 
 enum SearchStatus { initial, loading, success, error }
 
