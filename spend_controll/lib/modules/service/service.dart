@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
-import 'package:spend_controll/modules/expense/model/expense_model.dart';
+import 'package:spend_controll/modules/expenses/expense/model/expense_model.dart';
 
 class Service {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;

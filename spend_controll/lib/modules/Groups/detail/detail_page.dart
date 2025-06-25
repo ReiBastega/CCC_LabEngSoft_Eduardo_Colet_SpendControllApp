@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spend_controll/modules/Groups/detail/controller/detail_controller.dart';
 import 'package:spend_controll/modules/Groups/detail/controller/detail_state.dart';
 import 'package:spend_controll/modules/Groups/group/Controller/group_controller.dart';
-import 'package:spend_controll/modules/expense/controller/expense_controller.dart';
+import 'package:spend_controll/modules/expenses/expense/controller/expense_controller.dart';
 
 class DetailPage extends StatefulWidget {
   final DetailController detailController;
@@ -105,9 +105,7 @@ class _DetailPageState extends State<DetailPage> {
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () {
-          // Exemplo: abrir modal para adicionar despesa
-          // widget.expenseController
-          //     .openAddExpenseDialog(context, widget.groupId);
+          // aqui eu gostaria de colocar o modular para adcionar um usario ao grupo
         },
       ),
     );

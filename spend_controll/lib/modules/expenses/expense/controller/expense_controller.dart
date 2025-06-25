@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:spend_controll/modules/expense/model/expense_model.dart';
+import 'package:spend_controll/modules/expenses/expense/model/expense_model.dart';
 import 'package:spend_controll/modules/service/service.dart';
 
 part 'expense_state.dart';

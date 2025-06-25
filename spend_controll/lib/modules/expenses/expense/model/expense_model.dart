@@ -5,11 +5,12 @@ class Expense {
   final String groupId;
   final String description;
   final double amount;
-  final String categoryId; // Ou String categoryName dependendo da abordagem
+  final String categoryId;
   final String payerUserId;
   final List<String> participantsUserIds;
   final Timestamp createdAt;
   final String createdByUserId;
+  final String? receiptImageUrl; // Campo adicionado para URL do comprovante
 
   Expense({
     required this.id,
@@ -21,9 +22,9 @@ class Expense {
     required this.participantsUserIds,
     required this.createdAt,
     required this.createdByUserId,
+    this.receiptImageUrl, // Parâmetro opcional para URL do comprovante
   });
 
-  // Método para converter um DocumentSnapshot do Firestore em um objeto Expense
   factory Expense.fromFirestore(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
     return Expense(
@@ -36,6 +37,7 @@ class Expense {
       participantsUserIds: List<String>.from(data['participantsUserIds'] ?? []),
       createdAt: data['createdAt'] ?? Timestamp.now(),
       createdByUserId: data['createdByUserId'] ?? '',
+      receiptImageUrl: data['receiptImageUrl'], // Leitura do campo do Firestore
     );
   }
 
@@ -50,7 +52,8 @@ class Expense {
       'participantsUserIds': participantsUserIds,
       'createdAt': createdAt,
       'createdByUserId': createdByUserId,
+      'receiptImageUrl':
+          receiptImageUrl, // Inclusão do campo no Map para o Firestore
     };
   }
 }
-

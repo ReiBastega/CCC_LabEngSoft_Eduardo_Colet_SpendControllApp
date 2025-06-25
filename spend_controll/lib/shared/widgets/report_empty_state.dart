@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class ReportEmptyState extends StatelessWidget {
-  const ReportEmptyState({Key? key}) : super(key: key);
+  const ReportEmptyState({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +34,8 @@ class ReportEmptyState extends StatelessWidget {
               'Não encontramos transações para o período e filtros selecionados.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Colors.grey[600],
-              ),
+                    color: Colors.grey[600],
+                  ),
             ),
           ),
           const SizedBox(height: 32),
@@ -138,7 +138,8 @@ class ReportEmptyState extends StatelessWidget {
                         ),
                         const Divider(),
                         const SizedBox(height: 16),
-                        const Text('Ajuste os filtros para encontrar transações'),
+                        const Text(
+                            'Ajuste os filtros para encontrar transações'),
                         const SizedBox(height: 16),
                         ElevatedButton(
                           onPressed: () {

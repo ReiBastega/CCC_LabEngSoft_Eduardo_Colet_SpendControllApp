@@ -2,7 +2,7 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:spend_controll/modules/Groups/detail/controller/detail_controller.dart';
 import 'package:spend_controll/modules/Groups/detail/detail_page.dart';
 import 'package:spend_controll/modules/Groups/group/Controller/group_controller.dart';
-import 'package:spend_controll/modules/expense/controller/expense_controller.dart';
+import 'package:spend_controll/modules/expenses/expense/controller/expense_controller.dart';
 import 'package:spend_controll/modules/home/controller/home_controller.dart';
 import 'package:spend_controll/modules/service/service.dart';
 

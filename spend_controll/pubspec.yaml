@@ -38,13 +38,17 @@ dependencies:
   intl: ^0.18.1
   fl_chart: ^1.0.0
   shimmer: ^3.0.0
-  # path_provider: ^2.1.5
-  # share_plus: ^7.0.0
-  # open_file: ^3.5.4
-  # open_file_macos: ^0.2.0
-  # html: ^0.15.4
+  image_picker: ^1.1.2
+  path: ^1.8.3
+  uuid: ^3.0.7
+  path_provider: ^2.1.5
+  share_plus: ^7.0.0
+  open_file: ^3.5.4
+  open_file_macos: ^0.2.0
+  html: ^0.15.4
 
   #Firebase
+  firebase_storage: ^11.0.15
   firebase_core: ^2.30.0
   firebase_auth: ^4.17.4
   cloud_firestore: ^4.17.5
