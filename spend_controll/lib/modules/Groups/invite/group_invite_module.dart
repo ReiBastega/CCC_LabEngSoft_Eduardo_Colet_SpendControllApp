@@ -6,17 +6,23 @@ import 'package:spend_controll/modules/service/service.dart';
 class GroupInviteModule extends Module {
   @override
   List<Bind<Object>> get binds => [
-        Bind.lazySingleton<GroupInviteController>((i) =>
-            GroupInviteController(service: i(), groupId: i(), group: i())),
+        // Bind.lazySingleton<GroupInviteController>((i) =>
+        //     GroupInviteController(service: i(), groupId: i(), group: i())),
         Bind.lazySingleton((i) => Service()),
       ];
 
   @override
   List<ModularRoute> get routes => [
-        ChildRoute('/',
-            child: (context, args) => GroupInvitePage(
-                  controller: Modular.get(),
-                  group: args.data['group'],
-                )),
+        ChildRoute('/', child: (context, args) {
+          final group = args.data['group'];
+          return GroupInvitePage(
+            controller: GroupInviteController(
+              service: Modular.get(),
+              groupId: group.id,
+              group: group,
+            ),
+            group: group,
+          );
+        }),
       ];
 }

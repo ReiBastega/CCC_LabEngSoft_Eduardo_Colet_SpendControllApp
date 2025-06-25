@@ -40,7 +40,7 @@ class LoginController extends Cubit<LoginState> {
           const Duration(seconds: 15),
           onTimeout: () => throw Exception());
       if (loggedIn) {
-        Modular.to.navigate("/home");
+        Modular.to.navigate("/home/");
       }
     } on AuthException {
       emit(state.copyWith(status: LoginStatus.failure));
@@ -74,7 +74,6 @@ class LoginController extends Cubit<LoginState> {
     if (!logged) {
       return false;
     }
-    // Renovação de login
     bool internetConnection = await InternetConnectionChecker().hasConnection;
 
     if (internetConnection) {
