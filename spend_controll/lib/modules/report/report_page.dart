@@ -383,7 +383,7 @@ class _ReportPageState extends State<ReportPage>
           ),
           const SizedBox(height: 16),
           AspectRatio(
-            aspectRatio: 1.6,
+            aspectRatio: 1.1,
             child: ExpenseChartWidget(
               expenseData: widget.controller.state.expensesByCategory,
             ),
@@ -398,7 +398,7 @@ class _ReportPageState extends State<ReportPage>
           ),
           const SizedBox(height: 16),
           AspectRatio(
-            aspectRatio: 1.6,
+            aspectRatio: 1.1,
             child: IncomeChartWidget(
               incomeData: widget.controller.state.incomesByCategory,
             ),
