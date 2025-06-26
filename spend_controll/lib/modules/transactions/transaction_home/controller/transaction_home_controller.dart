@@ -334,6 +334,47 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
     }
   }
 
+  Future<void> updateTransaction({
+    required Transaction updated,
+    required Transaction old,
+  }) async {
+    try {
+      emit(state.copyWith(isLoading: true, hasError: false));
+
+      final txRef = firestore.collection('transactions').doc(updated.id);
+
+      // 1) Atualiza o documento
+      await txRef.update({
+        'description': updated.description,
+        'amount': updated.amount,
+        // adicione outros campos se permitir editar mais
+      });
+
+      // 2) Ajusta o saldo do grupo pelo delta de valor
+      final delta = updated.amount - old.amount;
+
+      final groupRef = firestore.collection('groups').doc(updated.groupId);
+
+      if (updated.type == TransactionType.income) {
+        // receita aumentou em delta
+        await groupRef.update({'balance': FieldValue.increment(delta)});
+      } else if (updated.type == TransactionType.expense) {
+        // despesa aumentou -> saldo cai em delta
+        await groupRef.update({'balance': FieldValue.increment(-delta)});
+      }
+      // se for transferência, lógica pode variar, ajuste conforme seu modelo
+
+      // 3) Recarrega a lista e emite estado final
+      await refreshTransactions();
+    } catch (e) {
+      emit(state.copyWith(
+        isLoading: false,
+        hasError: true,
+        errorMessage: 'Erro ao editar: ${e.toString()}',
+      ));
+    }
+  }
+
   @override
   void addListener(VoidCallback listener) {
     // TODO: implement addListener

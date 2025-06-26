@@ -427,6 +427,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                   TextButton(
                     onPressed: () {
                       Navigator.pop(context);
+                      _showEditTransactionSheet(transaction);
                     },
                     child: const Text('Editar'),
                   ),
@@ -619,5 +620,77 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
       case TransactionType.transfer:
         return 'Transferência';
     }
+  }
+
+  void _showEditTransactionSheet(Transaction txn) {
+    final descCtrl = TextEditingController(text: txn.description);
+    final amountCtrl =
+        TextEditingController(text: txn.amount.toStringAsFixed(2));
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          // Para o teclado não cobrir o campo
+          padding: EdgeInsets.only(
+              bottom: MediaQuery.of(ctx).viewInsets.bottom,
+              left: 16,
+              right: 16,
+              top: 16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Editar Transação',
+                  style: Theme.of(ctx).textTheme.titleLarge),
+              const SizedBox(height: 12),
+
+              // Descrição
+              TextField(
+                controller: descCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Descrição',
+                ),
+              ),
+
+              const SizedBox(height: 12),
+              // Valor
+              TextField(
+                controller: amountCtrl,
+                decoration: const InputDecoration(
+                  labelText: 'Valor (R\$)',
+                  prefixText: 'R\$ ',
+                ),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
+              ),
+
+              const SizedBox(height: 24),
+              ElevatedButton(
+                onPressed: () {
+                  final newDesc = descCtrl.text.trim();
+                  final newAmt = double.tryParse(amountCtrl.text) ?? txn.amount;
+
+                  widget.controller.updateTransaction(
+                    updated: txn.copyWith(
+                      description: newDesc,
+                      amount: newAmt,
+                    ),
+                    old: txn,
+                  );
+
+                  Navigator.pop(ctx);
+                },
+                child: const Text('Salvar Alterações'),
+              ),
+              const SizedBox(height: 16),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

@@ -18,4 +18,22 @@ class Transaction {
     required this.groupId,
     required this.groupName,
   });
+  Transaction copyWith({
+    String? description,
+    double? amount,
+    DateTime? date,
+    TransactionType? type,
+    String? groupId,
+    String? groupName,
+  }) {
+    return Transaction(
+      id: id,
+      description: description ?? this.description,
+      amount: amount ?? this.amount,
+      date: date ?? this.date,
+      type: type ?? this.type,
+      groupId: groupId ?? this.groupId,
+      groupName: groupName ?? this.groupName,
+    );
+  }
 }
