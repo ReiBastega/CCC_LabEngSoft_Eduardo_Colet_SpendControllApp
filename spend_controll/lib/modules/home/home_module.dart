@@ -6,8 +6,7 @@ import 'package:spend_controll/modules/service/service.dart';
 class HomeModule extends Module {
   @override
   List<Bind<Object>> get binds => [
-        Bind.lazySingleton(
-            (i) => HomeController(service: i(), auth: i(), firestore: i())),
+        Bind.lazySingleton((i) => HomeController(auth: i(), firestore: i())),
         Bind.lazySingleton((i) => Service())
       ];
 

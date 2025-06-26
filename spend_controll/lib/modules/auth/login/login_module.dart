@@ -9,8 +9,7 @@ class LoginModule extends Module {
   @override
   List<Bind<Object>> get binds => [
         Bind.lazySingleton<Service>((i) => Service()),
-        Bind.lazySingleton(
-            (i) => HomeController(service: i(), auth: i(), firestore: i())),
+        Bind.lazySingleton((i) => HomeController(auth: i(), firestore: i())),
         Bind.singleton((i) => FirebaseAuth.instance),
       ];
 

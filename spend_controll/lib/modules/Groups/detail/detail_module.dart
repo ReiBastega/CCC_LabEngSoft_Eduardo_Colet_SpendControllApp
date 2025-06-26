@@ -10,8 +10,7 @@ class DetailModule extends Module {
   List<Bind<Object>> get binds => [
         Bind.lazySingleton((i) => DetailController(
             groupController: i(), firestore: i(), service: i())),
-        Bind.lazySingleton(
-            (i) => HomeController(service: i(), auth: i(), firestore: i())),
+        Bind.lazySingleton((i) => HomeController(auth: i(), firestore: i())),
         Bind.lazySingleton((i) => Service()),
         Bind.lazySingleton((i) => GroupController(service: i()))
       ];

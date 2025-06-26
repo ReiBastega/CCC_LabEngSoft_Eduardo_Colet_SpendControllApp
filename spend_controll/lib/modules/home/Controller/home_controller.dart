@@ -1,72 +1,62 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
 import 'package:spend_controll/modules/home/controller/home_state.dart';
-import 'package:spend_controll/modules/service/service.dart';
 import 'package:spend_controll/modules/transactions/model/transaction_model.dart'
     as transaction_model;
 
-class HomeController extends Cubit<HomeState> implements ChangeNotifier {
-  final Service service;
+class HomeController extends Cubit<HomeState> {
   final FirebaseAuth auth;
   final FirebaseFirestore firestore;
 
-  HomeController(
-      {required this.service, required this.auth, required this.firestore})
-      : super(const HomeState.initial());
+  StreamSubscription<User?>? _authSub;
+  StreamSubscription<QuerySnapshot>? _groupsSub;
+  StreamSubscription<QuerySnapshot>? _recentTxSub;
+  StreamSubscription<QuerySnapshot>? _allTxSub;
+  StreamSubscription<QuerySnapshot>? _monthlySub;
 
-  Future<void> deleteAccount() async {
-    final user = auth.currentUser;
+  HomeController({
+    required this.auth,
+    required this.firestore,
+  }) : super(const HomeState.initial()) {
+    // 1) Começa ouvindo mudanças de autenticação
+    _authSub = auth.authStateChanges().listen(_onAuthChanged);
+  }
+
+  void _onAuthChanged(User? user) {
+    // Cancela qualquer listen prévio
+    _cancelAllSubs();
+
     if (user == null) {
+      // Usuário saiu do app
+      emit(state.copyWith(isAuthenticated: false));
       return;
     }
 
-    try {
-      await firestore.collection('users').doc(user.uid).delete();
+    // Usuário logado, vamos começar a ouvir dados em tempo real
+    emit(state.copyWith(
+      status: HomeStatus.loading,
+      isAuthenticated: true,
+    ));
 
-      await user.delete();
-
-      emit(state.copyWith(
-        status: HomeStatus.success,
-      ));
-    } on FirebaseAuthException catch (e) {
-      emit(state.copyWith(
-        status: HomeStatus.failure,
-        errorMessege: e.message ?? 'Erro ao excluir conta',
-      ));
-    } catch (e) {
-      emit(state.copyWith(errorMessege: e.toString()));
-    }
+    _listenGroups(user.uid);
+    _listenRecentTransactions(user.uid);
+    _listenAllTransactions(user.uid);
+    _listenMonthlySummary(user.uid);
   }
 
-  Future<void> loadUserData() async {
-    try {
-      emit(state.copyWith(status: HomeStatus.loading));
-
-      final user = auth.currentUser;
-      if (user == null) {
-        emit(state.copyWith(
-          errorType: HomeErrorType.unknown,
-          isAuthenticated: false,
-        ));
-        return;
-      }
-
-      final userDoc = await firestore.collection('users').doc(user.uid).get();
-      final userData = userDoc.data() ?? {};
-      final userName = userData['name'] ?? user.displayName ?? 'Usuário';
-
-      final groupsSnapshot = await firestore
-          .collection('groups')
-          .where('memberUserIds', arrayContains: user.uid)
-          .get();
-
-      final groups = groupsSnapshot.docs.map((doc) {
+  void _listenGroups(String uid) {
+    _groupsSub = firestore
+        .collection('groups')
+        .where('memberUserIds', arrayContains: uid)
+        .snapshots()
+        .listen((snap) {
+      final groups = snap.docs.map((doc) {
         final data = doc.data();
         final members = List<String>.from(data['memberUserIds'] ?? <String>[]);
-
         return Group(
           id: doc.id,
           name: data['name']?.toString() ?? 'Sem nome',
@@ -80,14 +70,27 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
         );
       }).toList();
 
-      final transactionsSnapshot = await firestore
-          .collection('transactions')
-          .where('userId', isEqualTo: user.uid)
-          .orderBy('date', descending: true)
-          .limit(5)
-          .get();
+      emit(state.copyWith(
+        status: HomeStatus.success,
+        groups: groups,
+      ));
+    }, onError: (e) {
+      emit(state.copyWith(
+        status: HomeStatus.failure,
+        errorMessege: e.toString(),
+      ));
+    });
+  }
 
-      final transactions = transactionsSnapshot.docs.map((doc) {
+  void _listenRecentTransactions(String uid) {
+    _recentTxSub = firestore
+        .collection('transactions')
+        .where('userId', isEqualTo: uid)
+        .orderBy('date', descending: true)
+        .limit(5)
+        .snapshots()
+        .listen((snap) {
+      final recent = snap.docs.map((doc) {
         final data = doc.data();
         return transaction_model.Transaction(
           id: doc.id,
@@ -100,62 +103,66 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
         );
       }).toList();
 
-      // soma todas as transações do usuário
-      final allTxSnap = await firestore
-          .collection('transactions')
-          .where('userId', isEqualTo: user.uid)
-          .get();
+      emit(state.copyWith(
+        status: HomeStatus.success,
+        recentTransactions: recent,
+      ));
+    });
+  }
 
-      double walletBalance = 0.0;
-      for (final tx in allTxSnap.docs) {
-        final data = tx.data();
-        final amount = (data['amount'] ?? 0.0).toDouble();
-        final type = _getTransactionType(data['type']);
-        walletBalance += (type == transaction_model.TransactionType.income)
-            ? amount
-            : -amount;
-      }
-      final now = DateTime.now();
-      final startOfMonth = DateTime(now.year, now.month, 1);
-      final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
-
-      final monthlySummarySnapshot = await firestore
-          .collection('transactions')
-          .where('userId', isEqualTo: user.uid)
-          .where('date', isGreaterThanOrEqualTo: startOfMonth)
-          .where('date', isLessThanOrEqualTo: endOfMonth)
-          .orderBy('date')
-          .get();
-
-      final Map<String, double> monthlySummary = {
-        'income': 0.0,
-        'expense': 0.0,
-      };
-      for (final doc in monthlySummarySnapshot.docs) {
+  void _listenAllTransactions(String uid) {
+    _allTxSub = firestore
+        .collection('transactions')
+        .where('userId', isEqualTo: uid)
+        .snapshots()
+        .listen((snap) {
+      double wallet = 0.0;
+      for (final doc in snap.docs) {
         final data = doc.data();
         final amount = (data['amount'] ?? 0.0).toDouble();
         final type = _getTransactionType(data['type']);
-        if (type == transaction_model.TransactionType.income) {
-          monthlySummary['income'] = (monthlySummary['income']! + amount);
-        } else {
-          monthlySummary['expense'] = (monthlySummary['expense']! + amount);
-        }
+        wallet += (type == transaction_model.TransactionType.income)
+            ? amount
+            : -amount;
       }
-
       emit(state.copyWith(
         status: HomeStatus.success,
-        userName: userName,
-        groups: groups,
-        recentTransactions: transactions,
-        totalBalance: walletBalance,
-        monthlySummary: monthlySummary,
+        totalBalance: wallet,
       ));
-    } catch (e) {
+    });
+  }
+
+  void _listenMonthlySummary(String uid) {
+    final now = DateTime.now();
+    final startOfMonth = DateTime(now.year, now.month, 1);
+    final endOfMonth = DateTime(now.year, now.month + 1, 0, 23, 59, 59);
+
+    _monthlySub = firestore
+        .collection('transactions')
+        .where('userId', isEqualTo: uid)
+        .where('date', isGreaterThanOrEqualTo: startOfMonth)
+        .where('date', isLessThanOrEqualTo: endOfMonth)
+        .snapshots()
+        .listen((snap) {
+      double income = 0, expense = 0;
+      for (final doc in snap.docs) {
+        final data = doc.data();
+        final amt = (data['amount'] ?? 0.0).toDouble();
+        final type = _getTransactionType(data['type']);
+        if (type == transaction_model.TransactionType.income) {
+          income += amt;
+        } else {
+          expense += amt;
+        }
+      }
       emit(state.copyWith(
-        status: HomeStatus.failure,
-        errorMessege: e.toString(),
+        status: HomeStatus.success,
+        monthlySummary: {
+          'income': income,
+          'expense': expense,
+        },
       ));
-    }
+    });
   }
 
   transaction_model.TransactionType _getTransactionType(String? type) {
@@ -171,27 +178,17 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
     }
   }
 
-  @override
-  void addListener(VoidCallback listener) {
-    // TODO: implement addListener
+  void _cancelAllSubs() {
+    _groupsSub?.cancel();
+    _recentTxSub?.cancel();
+    _allTxSub?.cancel();
+    _monthlySub?.cancel();
   }
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-  }
-
-  @override
-  // TODO: implement hasListeners
-  bool get hasListeners => throw UnimplementedError();
-
-  @override
-  void notifyListeners() {
-    // TODO: implement notifyListeners
-  }
-
-  @override
-  void removeListener(VoidCallback listener) {
-    // TODO: implement removeListener
+  Future<void> close() {
+    _authSub?.cancel();
+    _cancelAllSubs();
+    return super.close();
   }
 }
