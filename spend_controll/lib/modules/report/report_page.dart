@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:printing/printing.dart';
 import 'package:screenshot/screenshot.dart';
-import 'package:spend_controll/shared/widgets/daily_trend_chart_widget.dart';
 import 'package:spend_controll/shared/widgets/expense_chart_widget.dart';
 import 'package:spend_controll/shared/widgets/group_distribution_widget.dart';
 import 'package:spend_controll/shared/widgets/income_chart_widget.dart';
@@ -427,21 +426,6 @@ class _ReportPageState extends State<ReportPage>
             aspectRatio: 1.6,
             child: MonthlyComparisonWidget(
               monthlyData: widget.controller.state.monthlyComparison,
-            ),
-          ),
-          const Divider(height: 32),
-          const Text(
-            'Evolução Diária',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 16),
-          AspectRatio(
-            aspectRatio: 1.6,
-            child: DailyTrendChartWidget(
-              dailyTotals: widget.controller.state.dailyTotals,
             ),
           ),
           const SizedBox(height: 32),
