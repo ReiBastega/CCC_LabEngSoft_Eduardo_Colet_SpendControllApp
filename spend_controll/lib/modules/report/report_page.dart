@@ -716,7 +716,6 @@ class _ReportPageState extends State<ReportPage>
 
     final pdfBytes = await pdf.save();
 
-    // Compartilha o PDF
     await Printing.sharePdf(bytes: pdfBytes, filename: 'relatorio.pdf');
   }
 

@@ -41,7 +41,6 @@ class ReportEmptyState extends StatelessWidget {
           const SizedBox(height: 32),
           ElevatedButton.icon(
             onPressed: () {
-              // Show period picker
               showModalBottomSheet(
                 context: context,
                 shape: const RoundedRectangleBorder(
@@ -108,7 +107,6 @@ class ReportEmptyState extends StatelessWidget {
           const SizedBox(height: 16),
           TextButton.icon(
             onPressed: () {
-              // Show filter bottom sheet
               showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,

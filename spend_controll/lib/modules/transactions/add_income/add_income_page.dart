@@ -18,7 +18,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
   final _observationController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
-  // String? _selectedGroupId;
   String? _selectedCategory;
 
   final AddIncomeController controller = Modular.get<AddIncomeController>();
@@ -57,7 +56,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
       child: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Descrição
           TextFormField(
             controller: _descriptionController,
             decoration: const InputDecoration(
@@ -78,8 +76,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16),
-
-          // Valor
           TextFormField(
             controller: _amountController,
             decoration: const InputDecoration(
@@ -110,8 +106,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16),
-
-          // Data
           InkWell(
             onTap: () => _selectDate(context),
             child: InputDecorator(
@@ -126,8 +120,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Categoria
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
               labelText: 'Categoria',
@@ -148,8 +140,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
             },
           ),
           const SizedBox(height: 16),
-
-          // Observações
           TextFormField(
             controller: _observationController,
             decoration: const InputDecoration(
@@ -161,8 +151,6 @@ class _AddIncomePageState extends State<AddIncomePage> {
             maxLines: 3,
           ),
           const SizedBox(height: 24),
-
-          // Botão de Salvar
           ElevatedButton(
             onPressed: controller.state.isSaving ? null : _saveIncome,
             style: ElevatedButton.styleFrom(

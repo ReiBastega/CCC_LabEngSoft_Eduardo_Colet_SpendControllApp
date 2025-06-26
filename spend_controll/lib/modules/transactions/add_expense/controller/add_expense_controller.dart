@@ -80,7 +80,6 @@ class AddExpenseController extends ChangeNotifier {
         return false;
       }
 
-      // Criar transação no Firestore
       final transactionRef = _firestore.collection('transactions').doc();
 
       await transactionRef.set({
@@ -98,7 +97,6 @@ class AddExpenseController extends ChangeNotifier {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // Atualizar saldo do grupo (reduzir o valor da despesa)
       await _firestore.collection('groups').doc(groupId).update({
         'balance': FieldValue.increment(-amount),
         'lastTransaction': Timestamp.fromDate(date),

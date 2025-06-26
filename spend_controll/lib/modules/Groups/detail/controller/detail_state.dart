@@ -14,7 +14,6 @@ class DetailState {
   final Group? groups;
   final String? errorMessage;
 
-  // Member contribution and expenses
   final ContributionStatus contributionStatus;
   final List<MemberContribution> memberContributions;
   final List<Expense> transactions;

@@ -317,14 +317,11 @@ class ReportController extends ChangeNotifier {
   }
 
   String? _getCategoryFromTransaction(Transaction transaction) {
-    // In a real app, you would get the category from the transaction data
-    // For this example, we'll return a random category
     final categories = _state.availableCategories;
     if (categories.isEmpty) {
       return null;
     }
 
-    // Use the transaction ID to deterministically select a category
     final index = transaction.id.hashCode % categories.length;
     return categories[index.abs()];
   }
@@ -338,7 +335,7 @@ class ReportController extends ChangeNotifier {
       case 'transfer':
         return TransactionType.transfer;
       default:
-        return TransactionType.expense; // Default to expense
+        return TransactionType.expense;
     }
   }
 

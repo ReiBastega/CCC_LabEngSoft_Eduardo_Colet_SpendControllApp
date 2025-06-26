@@ -1,4 +1,3 @@
-// Modelo para contribuição de membro
 import 'package:spend_controll/modules/Groups/detail/controller/detail_controller.dart';
 
 class MemberContribution {

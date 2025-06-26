@@ -31,12 +31,10 @@ class _ReportFilterWidgetState extends State<ReportFilterWidget> {
     super.initState();
     _filter = widget.currentFilter;
 
-    // Initialize selected groups
     if (widget.currentFilter.groupIds != null) {
       _selectedGroups.addAll(widget.currentFilter.groupIds!);
     }
 
-    // Initialize selected categories
     if (widget.currentFilter.categories != null) {
       _selectedCategories.addAll(widget.currentFilter.categories!);
     }
@@ -67,8 +65,6 @@ class _ReportFilterWidgetState extends State<ReportFilterWidget> {
           ),
           const Divider(),
           const SizedBox(height: 16),
-
-          // Groups filter
           Text(
             'Grupos',
             style: Theme.of(context).textTheme.titleMedium,
@@ -108,8 +104,6 @@ class _ReportFilterWidgetState extends State<ReportFilterWidget> {
             ),
           ),
           const SizedBox(height: 24),
-
-          // Categories filter
           Text(
             'Categorias',
             style: Theme.of(context).textTheme.titleMedium,
@@ -147,8 +141,6 @@ class _ReportFilterWidgetState extends State<ReportFilterWidget> {
             ],
           ),
           const SizedBox(height: 24),
-
-          // Include transfers
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -168,8 +160,6 @@ class _ReportFilterWidgetState extends State<ReportFilterWidget> {
             ],
           ),
           const SizedBox(height: 24),
-
-          // Grouping type
           Text(
             'Agrupamento',
             style: Theme.of(context).textTheme.titleMedium,
@@ -212,8 +202,6 @@ class _ReportFilterWidgetState extends State<ReportFilterWidget> {
             ],
           ),
           const SizedBox(height: 32),
-
-          // Apply button
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -236,8 +224,6 @@ class _ReportFilterWidgetState extends State<ReportFilterWidget> {
               child: const Text('Aplicar Filtros'),
             ),
           ),
-
-          // Add extra padding for bottom sheet
           SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
         ],
       ),

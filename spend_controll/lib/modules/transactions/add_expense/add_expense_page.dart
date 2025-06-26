@@ -91,7 +91,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
       child: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Descrição
           TextFormField(
             controller: _descriptionController,
             decoration: const InputDecoration(
@@ -112,8 +111,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16),
-
-          // Valor
           TextFormField(
             controller: _amountController,
             decoration: const InputDecoration(
@@ -144,8 +141,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16),
-
-          // Data
           InkWell(
             onTap: () => _selectDate(context),
             child: InputDecorator(
@@ -160,8 +155,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
             ),
           ),
           const SizedBox(height: 16),
-
-          // Grupo
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
               labelText: 'Grupo',
@@ -188,8 +181,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
             },
           ),
           const SizedBox(height: 16),
-
-          // Categoria
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
               labelText: 'Categoria',
@@ -210,8 +201,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
             },
           ),
           const SizedBox(height: 16),
-
-          // Observações
           TextFormField(
             controller: _observationController,
             decoration: const InputDecoration(
@@ -223,8 +212,6 @@ class _AddExpensePageState extends State<AddExpensePage> {
             maxLines: 3,
           ),
           const SizedBox(height: 24),
-
-          // Botão de Salvar
           ElevatedButton(
             onPressed: controller.state.isSaving ? null : _saveExpense,
             style: ElevatedButton.styleFrom(
@@ -272,12 +259,10 @@ class _AddExpensePageState extends State<AddExpensePage> {
 
   void _saveExpense() async {
     if (_formKey.currentState!.validate()) {
-      // Formatar valor para double
       final cleanValue =
           _amountController.text.replaceAll('.', '').replaceAll(',', '.');
       final amount = double.parse(cleanValue);
 
-      // Encontrar nome do grupo selecionado
       final selectedGroup = controller.state.groups.firstWhere(
         (group) => group.id == _selectedGroupId,
       );

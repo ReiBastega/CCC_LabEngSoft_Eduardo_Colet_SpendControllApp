@@ -51,7 +51,6 @@ class Service {
 
   // --- Group Management ---
 
-  // Cria um novo grupo no Firestore
   Future<void> createGroup(String groupName) async {
     final userId = getCurrentUserId();
     if (userId == null) {

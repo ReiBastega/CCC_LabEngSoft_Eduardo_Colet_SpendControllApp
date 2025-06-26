@@ -635,7 +635,6 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
       ),
       builder: (ctx) {
         return Padding(
-          // Para o teclado não cobrir o campo
           padding: EdgeInsets.only(
               bottom: MediaQuery.of(ctx).viewInsets.bottom,
               left: 16,
@@ -647,17 +646,13 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
               Text('Editar Transação',
                   style: Theme.of(ctx).textTheme.titleLarge),
               const SizedBox(height: 12),
-
-              // Descrição
               TextField(
                 controller: descCtrl,
                 decoration: const InputDecoration(
                   labelText: 'Descrição',
                 ),
               ),
-
               const SizedBox(height: 12),
-              // Valor
               TextField(
                 controller: amountCtrl,
                 decoration: const InputDecoration(
@@ -667,7 +662,6 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
               ),
-
               const SizedBox(height: 24),
               ElevatedButton(
                 onPressed: () {

@@ -24,7 +24,6 @@ class CreateUserController extends Cubit<CreateUserState> {
     emit(state.copyWith(status: CreateUserStatus.loading));
 
     try {
-      // Cria conta no Auth
       final userCred = await auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
@@ -32,7 +31,6 @@ class CreateUserController extends Cubit<CreateUserState> {
 
       final uid = userCred.user?.uid;
       if (uid != null) {
-        // Salva dados adicionais no Firestore
         await firestore.collection('users').doc(uid).set({
           'name': name,
           'email': email,

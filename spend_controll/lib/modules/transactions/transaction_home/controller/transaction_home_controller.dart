@@ -343,28 +343,20 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
 
       final txRef = firestore.collection('transactions').doc(updated.id);
 
-      // 1) Atualiza o documento
       await txRef.update({
         'description': updated.description,
         'amount': updated.amount,
-        // adicione outros campos se permitir editar mais
       });
 
-      // 2) Ajusta o saldo do grupo pelo delta de valor
       final delta = updated.amount - old.amount;
 
       final groupRef = firestore.collection('groups').doc(updated.groupId);
 
       if (updated.type == TransactionType.income) {
-        // receita aumentou em delta
         await groupRef.update({'balance': FieldValue.increment(delta)});
       } else if (updated.type == TransactionType.expense) {
-        // despesa aumentou -> saldo cai em delta
         await groupRef.update({'balance': FieldValue.increment(-delta)});
       }
-      // se for transferência, lógica pode variar, ajuste conforme seu modelo
-
-      // 3) Recarrega a lista e emite estado final
       await refreshTransactions();
     } catch (e) {
       emit(state.copyWith(
@@ -376,28 +368,19 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
   }
 
   @override
-  void addListener(VoidCallback listener) {
-    // TODO: implement addListener
-  }
+  void addListener(VoidCallback listener) {}
 
   @override
-  void dispose() {
-    // TODO: implement dispose
-  }
+  void dispose() {}
 
   @override
-  // TODO: implement hasListeners
   bool get hasListeners => throw UnimplementedError();
 
   @override
-  void notifyListeners() {
-    // TODO: implement notifyListeners
-  }
+  void notifyListeners() {}
 
   @override
-  void removeListener(VoidCallback listener) {
-    // TODO: implement removeListener
-  }
+  void removeListener(VoidCallback listener) {}
 }
 
 class _TransactionTotals {
