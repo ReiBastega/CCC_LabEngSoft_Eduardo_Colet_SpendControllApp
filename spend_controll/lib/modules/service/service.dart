@@ -268,7 +268,6 @@ class Service {
       throw Exception("Já existe um convite pendente para este email");
     }
 
-    // Cria o convite
     await FirebaseFirestore.instance.collection('group_invitations').add({
       'groupId': groupId,
       'groupName': groupName,

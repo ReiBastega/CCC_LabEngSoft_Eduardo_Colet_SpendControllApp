@@ -26,6 +26,12 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
   final TextEditingController _emailController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    widget.controller.loadPendingInvitations();
+  }
+
+  @override
   void dispose() {
     _emailController.dispose();
     super.dispose();
@@ -233,51 +239,28 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
           ],
         ),
         const SizedBox(height: 8),
-        if (state.invitationsStatus == InvitationsStatus.loading)
-          const Center(
-            child: Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircularProgressIndicator(),
-            ),
-          )
-        else if (state.invitationsStatus == InvitationsStatus.loaded)
-          state.pendingInvitations.isEmpty
-              ? const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Center(
-                    child: Text(
-                      'Nenhum convite pendente',
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        color: Colors.grey,
-                      ),
+        state.pendingInvitations.isEmpty
+            ? const Padding(
+                padding: EdgeInsets.symmetric(vertical: 16.0),
+                child: Center(
+                  child: Text(
+                    'Nenhum convite pendente',
+                    style: TextStyle(
+                      fontStyle: FontStyle.italic,
+                      color: Colors.grey,
                     ),
                   ),
-                )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: state.pendingInvitations.length,
-                  itemBuilder: (context, index) {
-                    final invitation = state.pendingInvitations[index];
-                    return _buildInvitationItem(context, invitation);
-                  },
-                )
-        else if (state.invitationsStatus == InvitationsStatus.error)
-          Center(
-            child: Column(
-              children: [
-                const Text(
-                  'Erro ao carregar convites',
-                  style: TextStyle(color: Colors.red),
                 ),
-                TextButton(
-                  onPressed: () => widget.controller.loadPendingInvitations(),
-                  child: const Text('Tentar novamente'),
-                ),
-              ],
-            ),
-          ),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: state.pendingInvitations.length,
+                itemBuilder: (context, index) {
+                  final invitation = state.pendingInvitations[index];
+                  return _buildInvitationItem(context, invitation);
+                },
+              )
       ],
     );
   }
