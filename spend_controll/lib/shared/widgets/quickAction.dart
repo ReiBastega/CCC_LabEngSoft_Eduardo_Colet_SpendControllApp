@@ -4,9 +4,6 @@ enum QuickAction {
   addExpense,
   addIncome,
   transfer,
-  reports,
-  settings,
-  export,
 }
 
 class QuickActionsWidget extends StatelessWidget {
@@ -46,27 +43,6 @@ class QuickActionsWidget extends StatelessWidget {
           'Transferência',
           Colors.blue,
           () => onActionTap(QuickAction.transfer),
-        ),
-        _buildActionItem(
-          context,
-          Icons.bar_chart,
-          'Relatórios',
-          Colors.purple,
-          () => onActionTap(QuickAction.reports),
-        ),
-        _buildActionItem(
-          context,
-          Icons.settings,
-          'Configurações',
-          Colors.grey,
-          () => onActionTap(QuickAction.settings),
-        ),
-        _buildActionItem(
-          context,
-          Icons.download,
-          'Exportar Dados',
-          Colors.teal,
-          () => onActionTap(QuickAction.export),
         ),
       ],
     );

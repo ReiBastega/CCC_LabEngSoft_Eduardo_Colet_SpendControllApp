@@ -244,12 +244,6 @@ class _HomePageState extends State<HomePage> {
                   'Olá, ${widget.homeController.state.userName?.isNotEmpty == true ? widget.homeController.state.userName : 'Usuário'}!',
                   style: Theme.of(context).textTheme.headlineSmall,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.notifications_outlined),
-                  onPressed: () {
-                    Modular.to.pushNamed('/notifications/');
-                  },
-                ),
               ],
             ),
             const SizedBox(height: 24),
@@ -257,7 +251,7 @@ class _HomePageState extends State<HomePage> {
             BalanceCardWidget(
               totalBalance: widget.homeController.state.totalBalance,
               onTap: () {
-                Modular.to.pushNamed('/balance-details/');
+                Modular.to.pushNamed('/transactions/transaction_home/');
               },
             ),
             const SizedBox(height: 24),
@@ -294,7 +288,7 @@ class _HomePageState extends State<HomePage> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Modular.to.pushNamed('/transactions/');
+                    Modular.to.pushNamed('/transactions/transaction_home/');
                   },
                   child: const Text('Ver Todas'),
                 ),
@@ -303,8 +297,9 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 8),
             RecentTransactionsWidget(
               transactions: widget.homeController.state.recentTransactions,
-              onTransactionTap: (transaction) {
-                Modular.to.pushNamed('/transactions/${transaction.id}');
+              onTransactionTap: (transaction) async {
+                await Modular.to.pushNamed('/transactions/transaction_home',
+                    arguments: transaction);
               },
             ),
             const SizedBox(height: 24),
@@ -323,7 +318,6 @@ class _HomePageState extends State<HomePage> {
             ),
             const SizedBox(height: 24),
 
-            // Seção de Ações Rápidas
             Text(
               'Ações Rápidas',
               style: Theme.of(context).textTheme.titleLarge,
@@ -331,7 +325,6 @@ class _HomePageState extends State<HomePage> {
             const SizedBox(height: 8),
             QuickActionsWidget(
               onActionTap: (action) async {
-                // Navegar para a ação selecionada
                 switch (action) {
                   case QuickAction.addExpense:
                     Modular.to.pushNamed('/transactions/add-expense/');
@@ -345,15 +338,6 @@ class _HomePageState extends State<HomePage> {
                     break;
                   case QuickAction.transfer:
                     Modular.to.pushNamed('/transactions/transfer/');
-                    break;
-                  case QuickAction.reports:
-                    Modular.to.pushNamed('/report/');
-                    break;
-                  case QuickAction.settings:
-                    Modular.to.pushNamed('/settings/');
-                    break;
-                  case QuickAction.export:
-                    Modular.to.pushNamed('/export/');
                     break;
                 }
               },

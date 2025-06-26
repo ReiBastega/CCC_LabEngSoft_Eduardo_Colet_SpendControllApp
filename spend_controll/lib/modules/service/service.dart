@@ -44,6 +44,11 @@ class Service {
     return null;
   }
 
+  Future<String> getUserName(String userId) async {
+    final doc = await firestore.collection('users').doc(userId).get();
+    return doc.data()?['name'] ?? 'Usuário';
+  }
+
   // --- Group Management ---
 
   // Cria um novo grupo no Firestore
@@ -371,17 +376,6 @@ class Service {
 
     return snap.docs.map((d) => Expense.fromFirestore(d)).toList();
   }
-
-  // Future<List<Expense>> getGroupExpensesSync(String groupId) async {
-  //   final snap = await firestore
-  //       .collection('transactions')
-  //       .where('groupId', isEqualTo: groupId)
-  //       .where('type', isEqualTo: 'expense')
-  //       .orderBy('createdAt', descending: true)
-  //       .get();
-
-  //   return snap.docs.map((doc) => Expense.fromFirestore(doc)).toList();
-  // }
 
   Future<String> addExpenseWithId(Expense expense) async {
     final userId = getCurrentUserId();

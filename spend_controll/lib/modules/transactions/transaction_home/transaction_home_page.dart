@@ -13,7 +13,9 @@ import 'controller/transaction_home_controller.dart';
 
 class TransactionHomePage extends StatefulWidget {
   final TransactionHomeController controller;
-  const TransactionHomePage({super.key, required this.controller});
+  final Transaction? transactionChosse;
+  const TransactionHomePage(
+      {super.key, required this.controller, this.transactionChosse});
 
   @override
   State<TransactionHomePage> createState() => _TransactionHomePageState();
@@ -47,6 +49,14 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final Transaction? initialTransaction = Modular.args.data as Transaction?;
+
+    if (initialTransaction != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showTransactionDetails(initialTransaction);
+      });
+    }
+
     return BlocBuilder(
         bloc: widget.controller,
         builder: (context, state) {

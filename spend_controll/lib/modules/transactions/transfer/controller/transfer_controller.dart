@@ -6,6 +6,7 @@ import 'package:firebase_storage/firebase_storage.dart' as fs;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:spend_controll/modules/service/service.dart';
 import 'package:spend_controll/modules/transactions/model/group_model.dart';
 
 import 'transfer_state.dart';
@@ -76,14 +77,7 @@ class TransferController extends ChangeNotifier {
       _updateState(_state.copyWith(isSaving: true, hasError: false));
 
       final user = _auth.currentUser;
-      if (user == null) {
-        _updateState(_state.copyWith(
-          isSaving: false,
-          hasError: true,
-          errorMessage: 'Usuário não autenticado',
-        ));
-        return false;
-      }
+      final userName = await Service().getUserName(user!.uid);
 
       final transactionRef = _firestore.collection('transactions').doc();
 
@@ -107,7 +101,7 @@ class TransferController extends ChangeNotifier {
         'type': 'transfer',
         'destinationGroupName': destinationGroupName,
         'userId': user.uid,
-        'userName': user.displayName ?? 'Usuário',
+        'userName': userName,
         'observation': observation,
         'receiptImageUrl': receiptUrl,
         'createdAt': FieldValue.serverTimestamp(),
