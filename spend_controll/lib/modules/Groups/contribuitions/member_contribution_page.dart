@@ -37,7 +37,6 @@ class _MemberContributionPageState extends State<MemberContributionPage>
     );
     _tabController = TabController(length: 2, vsync: this);
 
-    // Carrega os dados ao iniciar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _controller.loadMembersWithContributions();
     });
@@ -72,10 +71,7 @@ class _MemberContributionPageState extends State<MemberContributionPage>
             ),
             body: Column(
               children: [
-                // Cabeçalho com informações do grupo
                 _buildGroupHeader(context),
-
-                // TabBar para alternar entre visões
                 TabBar(
                   controller: _tabController,
                   tabs: const [
@@ -83,16 +79,11 @@ class _MemberContributionPageState extends State<MemberContributionPage>
                     Tab(text: 'Transações'),
                   ],
                 ),
-
-                // Conteúdo das tabs
                 Expanded(
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      // Tab de resumo por membro
                       _buildMembersTab(context, state),
-
-                      // Tab de transações
                       _buildTransactionsTab(context, state),
                     ],
                   ),
@@ -158,12 +149,8 @@ class _MemberContributionPageState extends State<MemberContributionPage>
     return ListView(
       padding: const EdgeInsets.all(16.0),
       children: [
-        // Resumo geral
         _buildSummaryCard(context, state),
-
         const SizedBox(height: 16),
-
-        // Lista de membros com suas contribuições
         ...state.memberContributions.map((contribution) =>
             _buildMemberContributionCard(context, contribution, state)),
       ],
@@ -172,7 +159,6 @@ class _MemberContributionPageState extends State<MemberContributionPage>
 
   Widget _buildSummaryCard(
       BuildContext context, MemberContributionState state) {
-    // Calcula totais
     double totalPaid = 0;
     double totalOwed = 0;
 
@@ -309,7 +295,6 @@ class _MemberContributionPageState extends State<MemberContributionPage>
                       ],
                     ),
                   ),
-                  // Indicador de seleção
                   if (isSelected)
                     const Icon(Icons.check_circle, color: Colors.green),
                 ],
@@ -317,7 +302,6 @@ class _MemberContributionPageState extends State<MemberContributionPage>
 
               const SizedBox(height: 16),
 
-              // Detalhes de contribuição
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -397,7 +381,6 @@ class _MemberContributionPageState extends State<MemberContributionPage>
 
     return Column(
       children: [
-        // Barra de filtro
         if (state.selectedMemberId != null)
           Container(
             padding: const EdgeInsets.all(8.0),
@@ -422,8 +405,6 @@ class _MemberContributionPageState extends State<MemberContributionPage>
               ],
             ),
           ),
-
-        // Lista de transações
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(16.0),
@@ -484,9 +465,7 @@ class _MemberContributionPageState extends State<MemberContributionPage>
             ),
           ],
         ),
-        onTap: () {
-          // Navegar para detalhes da despesa (implementação futura)
-        },
+        onTap: () {},
       ),
     );
   }

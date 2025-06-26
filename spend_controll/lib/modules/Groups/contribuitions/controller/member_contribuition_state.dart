@@ -1,7 +1,8 @@
 // Estado do controller
-import 'package:spend_controll/modules/Groups/contribuitions/controller/member_contribution_controller.dart';
 import 'package:spend_controll/modules/Groups/model/member_contribuition.dart';
 import 'package:spend_controll/modules/expenses/expense/model/expense_model.dart';
+
+enum ContributionStatus { initial, loading, loaded, error }
 
 class MemberContributionState {
   final ContributionStatus status;
@@ -20,7 +21,6 @@ class MemberContributionState {
     this.errorMessage,
   });
 
-  // Estado inicial
   const MemberContributionState.initial()
       : status = ContributionStatus.initial,
         memberContributions = const [],
@@ -29,7 +29,6 @@ class MemberContributionState {
         selectedMemberId = null,
         errorMessage = null;
 
-  // Método para criar uma cópia com alterações
   MemberContributionState copyWith({
     ContributionStatus? status,
     List<MemberContribution>? memberContributions,

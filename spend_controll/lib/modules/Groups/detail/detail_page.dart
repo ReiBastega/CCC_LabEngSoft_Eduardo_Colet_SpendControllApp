@@ -29,7 +29,6 @@ class _DetailPageState extends State<DetailPage> {
   void initState() {
     super.initState();
     widget.detailController.loadGroupDetail(widget.groupId!);
-    // widget.expenseController.loadExpensesForGroup(widget.groupId);
   }
 
   @override

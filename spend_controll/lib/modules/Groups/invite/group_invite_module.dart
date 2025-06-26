@@ -6,8 +6,6 @@ import 'package:spend_controll/modules/service/service.dart';
 class GroupInviteModule extends Module {
   @override
   List<Bind<Object>> get binds => [
-        // Bind.lazySingleton<GroupInviteController>((i) =>
-        //     GroupInviteController(service: i(), groupId: i(), group: i())),
         Bind.lazySingleton((i) => Service()),
       ];
 

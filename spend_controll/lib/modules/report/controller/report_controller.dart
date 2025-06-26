@@ -2,8 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-// import 'package:share_plus/share_plus.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:spend_controll/modules/report/model/daily_total.dart';
+import 'package:spend_controll/modules/report/pdfGenerator/report_pdf_generator.dart';
 
 import '../../transactions/model/group_model.dart';
 import '../../transactions/model/transaction_model.dart';
@@ -13,7 +16,7 @@ class ReportController extends ChangeNotifier {
   ReportState _state = ReportState.initial();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final ReportPdfGenerator _pdfGenerator = ReportPdfGenerator();
+  final ReportPdfGenerator _pdfGenerator = ReportPdfGenerator();
 
   ExportOptions _exportOptions = const ExportOptions(
     includeCharts: true,
@@ -380,52 +383,53 @@ class ReportController extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Future<bool> generatePdf() async {
-  //   try {
-  //     _updateState(_state.copyWith(isGeneratingPdf: true));
+  Future<bool> generatePdf() async {
+    try {
+      _updateState(_state.copyWith(isGeneratingPdf: true));
 
-  //     final tempDir = await getTemporaryDirectory();
-  //     final fileName = 'relatorio_financeiro_${DateFormat('yyyyMMdd').format(DateTime.now())}.pdf';
-  //     final filePath = '${tempDir.path}/$fileName';
+      final tempDir = await getTemporaryDirectory();
+      final fileName =
+          'relatorio_financeiro_${DateFormat('yyyyMMdd').format(DateTime.now())}.pdf';
+      final filePath = '${tempDir.path}/$fileName';
 
-  //     await _pdfGenerator.generatePdf(
-  //       filePath: filePath,
-  //       state: _state,
-  //       options: _exportOptions,
-  //     );
+      await _pdfGenerator.generatePdf(
+        filePath: filePath,
+        state: _state,
+        options: _exportOptions,
+      );
 
-  //     _updateState(_state.copyWith(
-  //       isGeneratingPdf: false,
-  //       pdfPath: filePath,
-  //     ));
+      _updateState(_state.copyWith(
+        isGeneratingPdf: false,
+        pdfPath: filePath,
+      ));
 
-  //     return true;
-  //   } catch (e) {
-  //     _updateState(_state.copyWith(
-  //       isGeneratingPdf: false,
-  //       hasError: true,
-  //       errorMessage: 'Erro ao gerar PDF: ${e.toString()}',
-  //     ));
+      return true;
+    } catch (e) {
+      _updateState(_state.copyWith(
+        isGeneratingPdf: false,
+        hasError: true,
+        errorMessage: 'Erro ao gerar PDF: ${e.toString()}',
+      ));
 
-  //     return false;
-  //   }
-  // }
+      return false;
+    }
+  }
 
-  // Future<void> viewPdf() async {
-  //   if (_state.pdfPath != null) {
-  //     await OpenFile.open(_state.pdfPath!);
-  //   }
-  // }
+  Future<void> viewPdf() async {
+    if (_state.pdfPath != null) {
+      await OpenFile.open(_state.pdfPath!);
+    }
+  }
 
-  // Future<void> sharePdf() async {
-  //   if (_state.pdfPath != null) {
-  //     await Share.shareFiles(
-  //       [_state.pdfPath!],
-  //       text:
-  //           'Relatório Financeiro - ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
-  //     );
-  //   }
-  // }
+  Future<void> sharePdf() async {
+    if (_state.pdfPath != null) {
+      await Share.shareFiles(
+        [_state.pdfPath!],
+        text:
+            'Relatório Financeiro - ${DateFormat('dd/MM/yyyy').format(DateTime.now())}',
+      );
+    }
+  }
 
   String getLargestExpense() {
     if (_state.transactions.isEmpty) {

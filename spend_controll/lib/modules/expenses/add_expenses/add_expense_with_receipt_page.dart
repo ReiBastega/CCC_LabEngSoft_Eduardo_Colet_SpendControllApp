@@ -6,7 +6,6 @@ import 'package:spend_controll/modules/Groups/model/group_model.dart';
 import 'package:spend_controll/modules/expenses/add_expenses/controller/receipt_upload_controller.dart';
 import 'package:spend_controll/modules/expenses/expense/model/expense_model.dart';
 import 'package:spend_controll/modules/service/service.dart';
-import 'package:spend_controll/modules/service/service_extension.dart';
 import 'package:spend_controll/shared/widgets/appBar.dart';
 import 'package:spend_controll/shared/widgets/custom_button.dart';
 import 'package:spend_controll/shared/widgets/custom_text_field.dart';

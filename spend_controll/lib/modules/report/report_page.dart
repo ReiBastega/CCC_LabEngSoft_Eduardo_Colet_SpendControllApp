@@ -773,7 +773,7 @@ class _ReportPageState extends State<ReportPage>
                       child: ElevatedButton.icon(
                         onPressed: () {
                           Navigator.pop(context);
-                          // _generateAndSharePdf();
+                          _generateAndSharePdf();
                         },
                         icon: const Icon(Icons.picture_as_pdf),
                         label: const Text('Gerar PDF'),
@@ -812,22 +812,22 @@ class _ReportPageState extends State<ReportPage>
     );
   }
 
-  // Future<void> _generateAndSharePdf() async {
-  //   final result = await widget.controller.generatePdf();
+  Future<void> _generateAndSharePdf() async {
+    final result = await widget.controller.generatePdf();
 
-  //   if (result && mounted) {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       const SnackBar(
-  //         content: Text('PDF gerado com sucesso!'),
-  //         backgroundColor: Colors.green,
-  //       ),
-  //     );
+    if (result && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('PDF gerado com sucesso!'),
+          backgroundColor: Colors.green,
+        ),
+      );
 
-  //     if (widget.controller.state.pdfPath != null) {
-  //       _showPdfPreview();
-  //     }
-  //   }
-  // }
+      if (widget.controller.state.pdfPath != null) {
+        _showPdfPreview();
+      }
+    }
+  }
 
   void _showPdfPreview() {
     showModalBottomSheet(
@@ -879,36 +879,36 @@ class _ReportPageState extends State<ReportPage>
                       ),
               ),
               const SizedBox(height: 16),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              //   children: [
-              //     Expanded(
-              //       child: OutlinedButton.icon(
-              //         onPressed: () {
-              //           widget.controller.viewPdf();
-              //           Navigator.pop(context);
-              //         },
-              //         icon: const Icon(Icons.visibility),
-              //         label: const Text('Visualizar'),
-              //       ),
-              //     ),
-              //     const SizedBox(width: 16),
-              //     Expanded(
-              //       child: ElevatedButton.icon(
-              //         onPressed: () {
-              //           widget.controller.sharePdf();
-              //           Navigator.pop(context);
-              //         },
-              //         icon: const Icon(Icons.share),
-              //         label: const Text('Compartilhar'),
-              //         style: ElevatedButton.styleFrom(
-              //           backgroundColor: Theme.of(context).primaryColor,
-              //           foregroundColor: Colors.white,
-              //         ),
-              //       ),
-              //     ),
-              //   ],
-              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Expanded(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        widget.controller.viewPdf();
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.visibility),
+                      label: const Text('Visualizar'),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        widget.controller.sharePdf();
+                        Navigator.pop(context);
+                      },
+                      icon: const Icon(Icons.share),
+                      label: const Text('Compartilhar'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Theme.of(context).primaryColor,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         );
@@ -920,7 +920,6 @@ class _ReportPageState extends State<ReportPage>
     final startDate = DateFormat('dd/MM/yyyy').format(period.start);
     final endDate = DateFormat('dd/MM/yyyy').format(period.end);
 
-    // Check if it's the current month
     final now = DateTime.now();
     final firstDayOfMonth = DateTime(now.year, now.month, 1);
     final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
@@ -930,7 +929,6 @@ class _ReportPageState extends State<ReportPage>
       return 'Mês Atual';
     }
 
-    // Check if it's the last month
     final firstDayOfLastMonth = DateTime(now.year, now.month - 1, 1);
     final lastDayOfLastMonth = DateTime(now.year, now.month, 0);
 
@@ -985,8 +983,6 @@ class LineChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // This is a placeholder for a real chart implementation
-    // In a real app, you would use a charting library like fl_chart
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

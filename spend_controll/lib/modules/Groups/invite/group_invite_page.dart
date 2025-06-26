@@ -37,7 +37,6 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
       value: widget.controller,
       child: BlocConsumer<GroupInviteController, GroupInviteState>(
         listener: (context, state) {
-          // Exibe mensagens de erro
           if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -48,7 +47,6 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
             widget.controller.resetMessages();
           }
 
-          // Exibe mensagens de sucesso
           if (state.successMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -58,7 +56,6 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
             );
             widget.controller.resetMessages();
 
-            // Limpa o campo de email após enviar convite com sucesso
             if (state.inviteStatus == InviteStatus.success) {
               _emailController.clear();
               widget.controller.resetSearch();
@@ -75,12 +72,8 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Seção de busca de usuário
                   _buildSearchSection(context, state),
-
                   const SizedBox(height: 24),
-
-                  // Seção de convites pendentes
                   _buildPendingInvitationsSection(context, state),
                 ],
               ),
@@ -105,8 +98,6 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
-
-        // Campo de busca por email
         Row(
           children: [
             Expanded(
@@ -139,10 +130,7 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
             ),
           ],
         ),
-
         const SizedBox(height: 16),
-
-        // Resultado da busca
         if (state.searchStatus == SearchStatus.success &&
             state.foundUser != null)
           _buildUserSearchResult(context, state),
@@ -214,7 +202,6 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
             else
               Button(
                 text: 'Enviar Convite',
-                // isLoading: state.inviteStatus == InviteStatus.loading,
                 onPressed: () {
                   widget.controller.sendInvitation(user.email);
                 },
@@ -246,8 +233,6 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
           ],
         ),
         const SizedBox(height: 8),
-
-        // Estado de carregamento
         if (state.invitationsStatus == InvitationsStatus.loading)
           const Center(
             child: Padding(
@@ -255,8 +240,6 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
               child: CircularProgressIndicator(),
             ),
           )
-
-        // Lista de convites pendentes
         else if (state.invitationsStatus == InvitationsStatus.loaded)
           state.pendingInvitations.isEmpty
               ? const Padding(
@@ -280,8 +263,6 @@ class _GroupInvitePageState extends State<GroupInvitePage> {
                     return _buildInvitationItem(context, invitation);
                   },
                 )
-
-        // Estado de erro
         else if (state.invitationsStatus == InvitationsStatus.error)
           Center(
             child: Column(

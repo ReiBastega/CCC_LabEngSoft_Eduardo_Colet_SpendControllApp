@@ -5,7 +5,6 @@ import 'package:spend_controll/modules/Groups/model/group_model.dart';
 import 'package:spend_controll/modules/Groups/model/member_contribuition.dart';
 import 'package:spend_controll/modules/expenses/expense/model/expense_model.dart';
 import 'package:spend_controll/modules/service/service.dart';
-import 'package:spend_controll/modules/service/service_extension.dart';
 
 class MemberContributionController extends Cubit<MemberContributionState> {
   final Service service;
@@ -18,18 +17,14 @@ class MemberContributionController extends Cubit<MemberContributionState> {
     required this.group,
   }) : super(const MemberContributionState.initial());
 
-  // Carrega os membros do grupo com suas contribuições
   Future<void> loadMembersWithContributions() async {
     emit(state.copyWith(status: ContributionStatus.loading));
 
     try {
-      // Carrega os detalhes dos membros
       final memberDetails = await _loadMemberDetails();
 
-      // Carrega as despesas do grupo
       final expenses = await service.getGroupExpensesSync(groupId);
 
-      // Calcula as contribuições de cada membro
       final memberContributions =
           _calculateMemberContributions(memberDetails, expenses);
 
@@ -46,7 +41,6 @@ class MemberContributionController extends Cubit<MemberContributionState> {
     }
   }
 
-  // Carrega os detalhes dos membros (nome, email, etc)
   Future<Map<String, UserDetails>> _loadMemberDetails() async {
     final Map<String, UserDetails> memberDetails = {};
 
@@ -74,7 +68,6 @@ class MemberContributionController extends Cubit<MemberContributionState> {
           );
         }
       } catch (e) {
-        // Se houver erro ao carregar um membro específico, continua com os outros
         memberDetails[memberId] = UserDetails(
           id: memberId,
           name: 'Erro ao carregar usuário',
@@ -87,30 +80,24 @@ class MemberContributionController extends Cubit<MemberContributionState> {
     return memberDetails;
   }
 
-  // Calcula as contribuições de cada membro com base nas despesas
   List<MemberContribution> _calculateMemberContributions(
     Map<String, UserDetails> memberDetails,
     List<Expense> expenses,
   ) {
-    // Mapa para armazenar os totais de cada membro
     final Map<String, double> totalPaid = {};
     final Map<String, double> totalOwed = {};
 
-    // Inicializa os mapas com zero para todos os membros
     for (final memberId in memberDetails.keys) {
       totalPaid[memberId] = 0;
       totalOwed[memberId] = 0;
     }
 
-    // Calcula quanto cada membro pagou e quanto deve
     for (final expense in expenses) {
-      // Quem pagou a despesa
       if (totalPaid.containsKey(expense.payerUserId)) {
         totalPaid[expense.payerUserId] =
             (totalPaid[expense.payerUserId] ?? 0) + expense.amount;
       }
 
-      // Divide a despesa entre os participantes
       final participantsCount = expense.participantsUserIds.length;
       if (participantsCount > 0) {
         final amountPerPerson = expense.amount / participantsCount;
@@ -124,7 +111,6 @@ class MemberContributionController extends Cubit<MemberContributionState> {
       }
     }
 
-    // Cria a lista de contribuições
     final List<MemberContribution> contributions = [];
 
     for (final memberId in memberDetails.keys) {
@@ -141,16 +127,13 @@ class MemberContributionController extends Cubit<MemberContributionState> {
       ));
     }
 
-    // Ordena por saldo (do mais negativo para o mais positivo)
     contributions.sort((a, b) => a.balance.compareTo(b.balance));
 
     return contributions;
   }
 
-  // Filtra as despesas por membro específico
   void filterExpensesByMember(String? memberId) {
     if (memberId == null) {
-      // Se memberId for null, mostra todas as despesas
       emit(state.copyWith(
         selectedMemberId: null,
         filteredExpenses: state.expenses,
@@ -158,7 +141,6 @@ class MemberContributionController extends Cubit<MemberContributionState> {
       return;
     }
 
-    // Filtra despesas onde o membro é pagador ou participante
     final filteredExpenses = state.expenses.where((expense) {
       return expense.payerUserId == memberId ||
           expense.participantsUserIds.contains(memberId);
@@ -170,16 +152,11 @@ class MemberContributionController extends Cubit<MemberContributionState> {
     ));
   }
 
-  // Limpa o filtro de membros
   void clearMemberFilter() {
     filterExpensesByMember(null);
   }
 }
 
-// Enum para os diferentes estados
-enum ContributionStatus { initial, loading, loaded, error }
-
-// Modelo para detalhes do usuário
 class UserDetails {
   final String id;
   final String name;
