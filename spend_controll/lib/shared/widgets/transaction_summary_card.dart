@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class TransactionSummaryCard extends StatelessWidget {
   final double totalIncome;
   final double totalExpense;
+  final double transfer;
   final String period;
 
   const TransactionSummaryCard({
@@ -10,11 +11,12 @@ class TransactionSummaryCard extends StatelessWidget {
     required this.totalIncome,
     required this.totalExpense,
     required this.period,
+    required this.transfer,
   });
 
   @override
   Widget build(BuildContext context) {
-    final balance = totalIncome - totalExpense;
+    final balance = totalIncome - totalExpense - transfer;
     final isPositive = balance >= 0;
 
     return Card(

@@ -34,6 +34,7 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
         transactions: transactions,
         totalIncome: totals.income,
         totalExpense: totals.expense,
+        totalTransfer: totals.transfer,
         hasMoreTransactions: transactions.length >= _pageSize,
       ));
     } catch (e) {
@@ -57,6 +58,7 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
         transactions: transactions,
         totalIncome: totals.income,
         totalExpense: totals.expense,
+        totalTransfer: totals.transfer,
         hasMoreTransactions: transactions.length >= _pageSize,
       ));
     } catch (e) {
@@ -86,6 +88,7 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
         transactions: allTransactions,
         totalIncome: totals.income,
         totalExpense: totals.expense,
+        totalTransfer: totals.transfer,
         hasMoreTransactions: newTransactions.length >= _pageSize,
       ));
     } catch (e) {
@@ -198,16 +201,20 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
   _TransactionTotals _calculateTotals(List<Transaction> transactions) {
     double totalIncome = 0;
     double totalExpense = 0;
+    double totalTransfer = 0;
 
     for (final transaction in transactions) {
       if (transaction.type == TransactionType.income) {
         totalIncome += transaction.amount;
       } else if (transaction.type == TransactionType.expense) {
         totalExpense += transaction.amount;
+      } else if (transaction.type == TransactionType.transfer) {
+        totalTransfer += transaction.amount;
       }
     }
 
-    return _TransactionTotals(income: totalIncome, expense: totalExpense);
+    return _TransactionTotals(
+        income: totalIncome, expense: totalExpense, transfer: totalTransfer);
   }
 
   TransactionType _parseTransactionType(String? typeStr) {
@@ -355,9 +362,11 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
 class _TransactionTotals {
   final double income;
   final double expense;
+  final double transfer;
 
   _TransactionTotals({
     required this.income,
     required this.expense,
+    required this.transfer,
   });
 }

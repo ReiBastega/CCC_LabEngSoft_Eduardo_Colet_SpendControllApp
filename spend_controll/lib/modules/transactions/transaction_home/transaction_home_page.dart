@@ -116,6 +116,7 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
           child: TransactionSummaryCard(
             totalIncome: controller.state.totalIncome,
             totalExpense: controller.state.totalExpense,
+            transfer: controller.state.totalTransfer,
             period: _getPeriodText(),
           ),
         ),

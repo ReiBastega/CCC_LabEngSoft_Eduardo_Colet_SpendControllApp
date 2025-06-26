@@ -10,6 +10,7 @@ class TransactionHomeState {
   final List<Transaction> transactions;
   final double totalIncome;
   final double totalExpense;
+  final double totalTransfer;
   final TransactionFilter filter;
   final bool hasMoreTransactions;
   final List<Group> availableGroups;
@@ -21,6 +22,7 @@ class TransactionHomeState {
     this.transactions = const [],
     this.totalIncome = 0,
     this.totalExpense = 0,
+    this.totalTransfer = 0,
     this.filter = const TransactionFilter(),
     this.hasMoreTransactions = false,
     this.availableGroups = const [],
@@ -39,6 +41,7 @@ class TransactionHomeState {
     TransactionFilter? filter,
     bool? hasMoreTransactions,
     List<Group>? availableGroups,
+    double? totalTransfer,
   }) {
     return TransactionHomeState(
       isLoading: isLoading ?? this.isLoading,
@@ -51,6 +54,7 @@ class TransactionHomeState {
       filter: filter ?? this.filter,
       hasMoreTransactions: hasMoreTransactions ?? this.hasMoreTransactions,
       availableGroups: availableGroups ?? this.availableGroups,
+      totalTransfer: totalTransfer ?? this.totalTransfer,
     );
   }
 }
