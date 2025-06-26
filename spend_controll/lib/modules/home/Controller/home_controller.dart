@@ -22,25 +22,23 @@ class HomeController extends Cubit<HomeState> {
     required this.auth,
     required this.firestore,
   }) : super(const HomeState.initial()) {
-    // 1) Começa ouvindo mudanças de autenticação
     _authSub = auth.authStateChanges().listen(_onAuthChanged);
   }
 
   void _onAuthChanged(User? user) {
-    // Cancela qualquer listen prévio
     _cancelAllSubs();
 
     if (user == null) {
-      // Usuário saiu do app
       emit(state.copyWith(isAuthenticated: false));
       return;
     }
 
-    // Usuário logado, vamos começar a ouvir dados em tempo real
     emit(state.copyWith(
       status: HomeStatus.loading,
       isAuthenticated: true,
     ));
+
+    _fetchUserName(user.uid);
 
     _listenGroups(user.uid);
     _listenRecentTransactions(user.uid);
@@ -108,6 +106,12 @@ class HomeController extends Cubit<HomeState> {
         recentTransactions: recent,
       ));
     });
+  }
+
+  Future<void> _fetchUserName(String uid) async {
+    final doc = await firestore.collection('users').doc(uid).get();
+    final name = doc.data()?['name'] as String? ?? '';
+    emit(state.copyWith(userName: name));
   }
 
   void _listenAllTransactions(String uid) {
