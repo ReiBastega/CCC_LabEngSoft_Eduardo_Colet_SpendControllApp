@@ -86,8 +86,8 @@ class _GroupListPageState extends State<GroupListPage> {
             ),
           ),
           ...invitations.map((inv) => ListTile(
-                title: Text(inv.groupName ?? 'Grupo'),
-                subtitle: Text('Convidado por: ${inv.inviterUserId ?? ''}'),
+                title: Text(inv.groupName),
+                subtitle: Text('Convidado por: ${inv.inviterUserId}'),
                 trailing: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [

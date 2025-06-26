@@ -1,5 +1,5 @@
 // Modelo para contribuição de membro
-import 'package:spend_controll/modules/Groups/contribuitions/controller/member_contribution_controller.dart';
+import 'package:spend_controll/modules/Groups/detail/controller/detail_controller.dart';
 
 class MemberContribution {
   final String userId;
