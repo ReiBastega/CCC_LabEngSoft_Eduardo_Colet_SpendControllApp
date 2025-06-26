@@ -39,7 +39,7 @@ class _DetailPageState extends State<DetailPage>
   void initState() {
     super.initState();
     widget.detailController.loadGroupDetail(widget.groupId!);
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
   }
 
   @override
@@ -78,6 +78,7 @@ class _DetailPageState extends State<DetailPage>
                 tabs: const [
                   Tab(text: 'Resumo por Membro'),
                   Tab(text: 'Transações'),
+                  Tab(text: 'Membros'),
                 ],
               ),
               Expanded(
@@ -86,6 +87,7 @@ class _DetailPageState extends State<DetailPage>
                   children: [
                     _buildMembersTab(context, detailState),
                     _buildTransactionsTab(context, detailState),
+                    _buildManageMembersTab(context, detailState),
                   ],
                 ),
               ),
@@ -472,6 +474,124 @@ class _DetailPageState extends State<DetailPage>
         onTap: () {},
       ),
     );
+  }
+
+  Widget _buildManageMembersTab(BuildContext context, DetailState state) {
+    final group = state.groups;
+    if (group == null) {
+      return const SizedBox.shrink();
+    }
+
+    final currentUserId = widget.groupController.service.getCurrentUserId();
+    final isAdmin = group.adminUserId == currentUserId;
+
+    if (!isAdmin) {
+      return Center(
+        child: ElevatedButton(
+          onPressed: () => _confirmLeaveGroup(group.id, currentUserId!),
+          child: const Text('Sair do Grupo'),
+        ),
+      );
+    }
+
+    if (state.memberContributions.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    return ListView.builder(
+      padding: const EdgeInsets.all(16.0),
+      itemCount: state.memberContributions.length,
+      itemBuilder: (context, index) {
+        final member = state.memberContributions[index];
+        return Card(
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Theme.of(context).primaryColor.withOpacity(0.2),
+              child: Text(
+                member.userDetails.name.isNotEmpty
+                    ? member.userDetails.name[0].toUpperCase()
+                    : '?',
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            title: Text(member.userDetails.name),
+            subtitle: member.userDetails.email.isNotEmpty
+                ? Text(member.userDetails.email)
+                : null,
+            trailing: member.userId == group.adminUserId
+                ? null
+                : IconButton(
+                    icon: const Icon(Icons.remove_circle, color: Colors.red),
+                    onPressed: () => _confirmRemoveMember(
+                      group.id,
+                      member.userId,
+                      member.userDetails.name,
+                    ),
+                  ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _confirmLeaveGroup(String groupId, String userId) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Sair do grupo'),
+        content: const Text('Tem certeza que deseja sair deste grupo?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Sair'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await widget.groupController.removeUserFromGroup(groupId, userId);
+      if (mounted) {
+        Navigator.of(context).pop();
+      }
+    }
+  }
+
+  Future<void> _confirmRemoveMember(
+      String groupId, String memberId, String memberName) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Remover membro'),
+        content: Text('Deseja remover $memberName do grupo?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Não'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Sim'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      await widget.groupController.removeUserFromGroup(groupId, memberId);
+      await widget.detailController.loadGroupDetail(groupId);
+      final g = widget.detailController.state.groups;
+      if (g != null) {
+        await widget.detailController.loadMembersWithContributions(g);
+      }
+    }
   }
 
   String _getMemberName(DetailState state, String userId) {
