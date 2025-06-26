@@ -10,13 +10,12 @@ class GroupController extends Cubit<GroupState> {
   StreamSubscription? _groupsSubscription;
 
   GroupController({required this.service}) : super(const GroupState.initial()) {
-    _loadUserGroups(); // Carrega os grupos ao iniciar o controller
+    _loadUserGroups();
   }
 
-  // Carrega os grupos do usuário logado
   void _loadUserGroups() {
     emit(state.copyWith(status: GroupStatus.loading));
-    _groupsSubscription?.cancel(); // Cancela inscrição anterior se houver
+    _groupsSubscription?.cancel();
     _groupsSubscription = service.getUserGroups().listen((groups) {
       emit(state.copyWith(status: GroupStatus.loaded, groups: groups));
     }, onError: (error) {
@@ -26,7 +25,6 @@ class GroupController extends Cubit<GroupState> {
     });
   }
 
-  // Cria um novo grupo
   Future<void> createGroup(String groupName) async {
     if (groupName.trim().isEmpty) {
       emit(state.copyWith(
@@ -37,10 +35,7 @@ class GroupController extends Cubit<GroupState> {
     emit(state.copyWith(status: GroupStatus.loading));
     try {
       await service.createGroup(groupName);
-      // O stream já vai atualizar a lista, mas podemos emitir success se quisermos feedback imediato
       emit(state.copyWith(status: GroupStatus.success));
-      // Recarrega explicitamente ou confia no stream para atualizar
-      // _loadUserGroups(); // Opcional: Forçar recarga ou esperar o stream
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: GroupStatus.error,
@@ -52,11 +47,9 @@ class GroupController extends Cubit<GroupState> {
     }
   }
 
-  // Adiciona usuário ao grupo (implementação pendente no Service)
   Future<void> addUserToGroup(String groupId, String userEmail) async {
     emit(state.copyWith(status: GroupStatus.loading));
     try {
-      // TODO: Implementar busca de usuário por email no Service
       await service.addUserToGroup(groupId, userEmail);
       emit(state.copyWith(status: GroupStatus.success));
     } on FirebaseAuthException catch (e) {
@@ -74,14 +67,12 @@ class GroupController extends Cubit<GroupState> {
     }
   }
 
-  // Remove usuário do grupo
   Future<void> removeUserFromGroup(
       String groupId, String userIdToRemove) async {
     emit(state.copyWith(status: GroupStatus.loading));
     try {
       await service.removeUserFromGroup(groupId, userIdToRemove);
       emit(state.copyWith(status: GroupStatus.success));
-      // O stream deve atualizar a lista de membros indiretamente se a view depender disso
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: GroupStatus.error,
@@ -93,7 +84,6 @@ class GroupController extends Cubit<GroupState> {
     }
   }
 
-  // Limpa a inscrição do stream ao descartar o controller
   @override
   Future<void> close() {
     _groupsSubscription?.cancel();

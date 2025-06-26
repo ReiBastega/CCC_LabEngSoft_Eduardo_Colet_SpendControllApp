@@ -58,6 +58,8 @@ class Service {
       throw Exception("Usuário não autenticado.");
     }
 
+    final adminUserName = await getUserName(userId);
+
     final newGroupRef = firestore.collection('groups').doc();
     final group = Group(
       id: newGroupRef.id,
@@ -68,9 +70,13 @@ class Service {
       balance: 0.0,
       memberCount: 1,
       isPositive: true,
+      adminUserName: adminUserName,
     );
 
-    await newGroupRef.set(group.toFirestore());
+    await newGroupRef.set({
+      ...group.toFirestore(),
+      'adminUserName': adminUserName,
+    });
   }
 
   Future<void> addUserToGroup(String groupId, String userEmail) async {

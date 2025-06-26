@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 import 'package:spend_controll/modules/profile/controller/profile_state.dart';
 import 'package:spend_controll/modules/service/service.dart';
 
@@ -23,6 +24,10 @@ class ProfileController extends Cubit<ProfileState> {
     try {
       await service.logout();
       emit(state.copyWith(status: ProfileStatus.success));
+      Modular.to.pushNamedAndRemoveUntil(
+        '/',
+        (_) => false,
+      );
     } catch (e) {
       emit(state.copyWith(
         status: ProfileStatus.failure,

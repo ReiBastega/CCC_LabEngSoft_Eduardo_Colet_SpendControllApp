@@ -76,6 +76,7 @@ class HomeController extends Cubit<HomeState> implements ChangeNotifier {
           adminUserId: data['adminUserId']?.toString() ?? '',
           createdAt: data['createdAt'] as Timestamp? ?? Timestamp.now(),
           memberUserIds: members,
+          adminUserName: data['adminUserName']?.toString() ?? '',
         );
       }).toList();
 

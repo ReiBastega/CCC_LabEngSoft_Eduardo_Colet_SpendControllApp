@@ -46,6 +46,7 @@ class DetailController extends Cubit<DetailState> {
         adminUserId: data['adminUserId'] as String? ?? '',
         createdAt: data['createdAt'] ?? Timestamp.now(),
         memberUserIds: members,
+        adminUserName: data['adminUserName'] as String? ?? '',
       );
 
       emit(state.copyWith(

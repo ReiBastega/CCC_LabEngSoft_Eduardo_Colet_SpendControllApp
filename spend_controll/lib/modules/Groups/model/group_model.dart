@@ -4,6 +4,7 @@ class Group {
   final String id;
   final String name;
   final String adminUserId;
+  final String adminUserName;
   final List<String> memberUserIds;
   final Timestamp createdAt;
   final double balance;
@@ -14,6 +15,7 @@ class Group {
     required this.id,
     required this.name,
     required this.adminUserId,
+    required this.adminUserName,
     required this.memberUserIds,
     required this.createdAt,
     required this.balance,
@@ -32,6 +34,7 @@ class Group {
       memberCount: (data['memberUserIds'] as List?)?.length ?? 0,
       isPositive: (data['balance'] ?? 0.0) >= 0,
       balance: (data['balance'] ?? 0.0).toDouble(),
+      adminUserName: '${data['adminUserName'] ?? ''}',
     );
   }
 

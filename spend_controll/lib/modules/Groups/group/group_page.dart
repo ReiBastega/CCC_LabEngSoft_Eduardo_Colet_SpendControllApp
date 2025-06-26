@@ -182,7 +182,7 @@ class _GroupListPageState extends State<GroupListPage> {
                         return ListTile(
                           title: Text(group.name),
                           subtitle: Text(
-                              'Admin: ${group.adminUserId == widget.groupController.service.getCurrentUserId() ? "Você" : group.adminUserId}'),
+                              'Admin: ${group.adminUserId == widget.groupController.service.getCurrentUserId() ? "Você" : group.adminUserName}'),
                           trailing: IconButton(
                             icon: const Icon(Icons.arrow_forward_ios),
                             onPressed: () {

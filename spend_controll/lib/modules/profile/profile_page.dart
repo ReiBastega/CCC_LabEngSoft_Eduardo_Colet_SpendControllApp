@@ -216,7 +216,6 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       onPressed: () {
                         widget.profileController.logout();
-                        Modular.to.pushReplacementNamed('/');
                       }),
                 ),
                 const SizedBox(height: 12),

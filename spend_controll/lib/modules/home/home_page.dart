@@ -69,12 +69,6 @@ class _HomePageState extends State<HomePage> {
                           'Olá, ${state.userName?.isNotEmpty == true ? state.userName : 'Usuário'}!',
                           style: Theme.of(context).textTheme.headlineSmall,
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.notifications_outlined),
-                          onPressed: () {
-                            Modular.to.pushNamed('/notifications/');
-                          },
-                        ),
                       ],
                     ),
                     const SizedBox(height: 8),
