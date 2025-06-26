@@ -439,6 +439,10 @@ class Service {
       'receiptImageUrl': receiptUrl,
     });
   }
+
+  Future<void> deleteGroup(String groupId) async {
+    await firestore.collection('groups').doc(groupId).delete();
+  }
 }
 
 class UserModel {

@@ -67,6 +67,19 @@ class GroupController extends Cubit<GroupState> {
     }
   }
 
+  Future<void> deleteGroup(String groupId) async {
+    emit(state.copyWith(status: GroupStatus.loading));
+    try {
+      await service.deleteGroup(groupId);
+      emit(state.copyWith(status: GroupStatus.success));
+    } catch (e) {
+      emit(state.copyWith(
+        status: GroupStatus.error,
+        errorMessage: "Erro ao excluir grupo: ${e.toString()}",
+      ));
+    }
+  }
+
   Future<void> removeUserFromGroup(
       String groupId, String userIdToRemove) async {
     emit(state.copyWith(status: GroupStatus.loading));

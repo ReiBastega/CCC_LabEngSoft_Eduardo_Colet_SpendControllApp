@@ -136,7 +136,6 @@ class _GroupListPageState extends State<GroupListPage> {
                 const LinearProgressIndicator(),
               if (snapshot.hasData)
                 _buildUserInvitationsSection(context, snapshot.data!),
-              // ...o restante da sua tela, como a lista de grupos...
               Expanded(
                 child: BlocConsumer<GroupController, GroupState>(
                   bloc: widget.groupController,
@@ -182,13 +181,55 @@ class _GroupListPageState extends State<GroupListPage> {
                         return ListTile(
                           title: Text(group.name),
                           subtitle: Text(
-                              'Admin: ${group.adminUserId == widget.groupController.service.getCurrentUserId() ? "Você" : group.adminUserName}'),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.arrow_forward_ios),
-                            onPressed: () {
-                              Modular.to
-                                  .pushNamed('/groups/detail/${group.id}');
-                            },
+                            'Admin: ${group.adminUserId == widget.groupController.service.getCurrentUserId() ? "Você" : group.adminUserName}',
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (group.adminUserId ==
+                                  widget.groupController.service
+                                      .getCurrentUserId())
+                                IconButton(
+                                  icon: const Icon(Icons.delete,
+                                      color: Colors.red),
+                                  tooltip: 'Excluir grupo',
+                                  onPressed: () async {
+                                    final confirm = await showDialog<bool>(
+                                      context: context,
+                                      builder: (context) => AlertDialog(
+                                        title: const Text('Excluir grupo'),
+                                        content: const Text(
+                                            'Tem certeza que deseja excluir este grupo? Esta ação não pode ser desfeita.'),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, false),
+                                            child: const Text('Cancelar'),
+                                          ),
+                                          TextButton(
+                                            onPressed: () =>
+                                                Navigator.pop(context, true),
+                                            child: const Text('Excluir',
+                                                style: TextStyle(
+                                                    color: Colors.red)),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                    if (confirm == true) {
+                                      await widget.groupController
+                                          .deleteGroup(group.id);
+                                    }
+                                  },
+                                ),
+                              IconButton(
+                                icon: const Icon(Icons.arrow_forward_ios),
+                                onPressed: () {
+                                  Modular.to
+                                      .pushNamed('/groups/detail/${group.id}');
+                                },
+                              ),
+                            ],
                           ),
                         );
                       },

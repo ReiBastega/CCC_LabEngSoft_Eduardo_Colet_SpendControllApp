@@ -318,37 +318,28 @@ class _ReportPageState extends State<ReportPage>
         children: [
           const Text(
             'Distribuição por Grupo',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
-          AspectRatio(
-            aspectRatio: 1.6,
+          SizedBox(
+            height: 250,
             child: GroupDistributionWidget(
               groupData: widget.controller.state.totalsByGroup,
             ),
           ),
-          const Divider(height: 32),
+          const SizedBox(height: 32),
           const Text(
             'Resumo de Transações',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           TransactionSummaryWidget(
             transactions: widget.controller.state.transactions,
           ),
-          const Divider(height: 32),
+          const SizedBox(height: 32),
           const Text(
             'Insights',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           _buildInsightCard(
