@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import 'controller/transfer_controller.dart';
@@ -19,8 +22,8 @@ class _TransferPageState extends State<TransferPage> {
   final _observationController = TextEditingController();
 
   DateTime _selectedDate = DateTime.now();
-  String? _selectedSourceGroupId;
   String? _selectedDestinationGroupId;
+  XFile? _receiptImage;
 
   @override
   void initState() {
@@ -161,49 +164,15 @@ class _TransferPageState extends State<TransferPage> {
           ),
           const SizedBox(height: 16),
 
-          // Grupo de Origem
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
-              labelText: 'Grupo de Origem',
+              labelText: 'Grupo de destino',
               border: OutlineInputBorder(),
               prefixIcon: Icon(Icons.arrow_upward),
             ),
-            value: _selectedSourceGroupId,
-            items: widget.controller.state.groups.map((group) {
-              return DropdownMenuItem<String>(
-                value: group.id,
-                child: Text(group.name),
-              );
-            }).toList(),
-            onChanged: (value) {
-              setState(() {
-                _selectedSourceGroupId = value;
-                // Se o grupo de destino for igual ao de origem, limpar seleção de destino
-                if (_selectedDestinationGroupId == value) {
-                  _selectedDestinationGroupId = null;
-                }
-              });
-            },
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor, selecione um grupo de origem';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 16),
-
-          // Grupo de Destino
-          DropdownButtonFormField<String>(
-            decoration: const InputDecoration(
-              labelText: 'Grupo de Destino',
-              border: OutlineInputBorder(),
-              prefixIcon: Icon(Icons.arrow_downward),
-            ),
+            hint: const Text('Selecione um grupo'),
             value: _selectedDestinationGroupId,
-            items: widget.controller.state.groups
-                .where((group) => group.id != _selectedSourceGroupId)
-                .map((group) {
+            items: widget.controller.state.groups.map((group) {
               return DropdownMenuItem<String>(
                 value: group.id,
                 child: Text(group.name),
@@ -217,9 +186,6 @@ class _TransferPageState extends State<TransferPage> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Por favor, selecione um grupo de destino';
-              }
-              if (value == _selectedSourceGroupId) {
-                return 'Os grupos de origem e destino devem ser diferentes';
               }
               return null;
             },
@@ -237,9 +203,43 @@ class _TransferPageState extends State<TransferPage> {
             ),
             maxLines: 3,
           ),
+          const SizedBox(height: 16),
+
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Comprovante (opcional)'),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  ElevatedButton.icon(
+                    icon: const Icon(Icons.camera_alt),
+                    label: const Text('Anexar foto'),
+                    onPressed: () async {
+                      final image = await ImagePicker().pickImage(
+                          source: ImageSource.gallery, imageQuality: 70);
+                      if (image != null) {
+                        setState(() => _receiptImage = image);
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 16),
+                  if (_receiptImage != null)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.file(
+                        File(_receiptImage!.path),
+                        width: 60,
+                        height: 60,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
           const SizedBox(height: 24),
 
-          // Botão de Transferir
           ElevatedButton(
             onPressed: widget.controller.state.isSaving ? null : _saveTransfer,
             style: ElevatedButton.styleFrom(
@@ -287,26 +287,29 @@ class _TransferPageState extends State<TransferPage> {
 
   void _saveTransfer() async {
     if (_formKey.currentState!.validate()) {
-      // Formatar valor para double
       final cleanValue =
           _amountController.text.replaceAll('.', '').replaceAll(',', '.');
       final amount = double.parse(cleanValue);
 
-      // Encontrar nomes dos grupos selecionados
-      final sourceGroup = widget.controller.state.groups.firstWhere(
-        (group) => group.id == _selectedSourceGroupId,
-      );
+      final destinationGroupList = widget.controller.state.groups
+          .where((group) => group.id == _selectedDestinationGroupId)
+          .toList();
 
-      final destinationGroup = widget.controller.state.groups.firstWhere(
-        (group) => group.id == _selectedDestinationGroupId,
-      );
+      if (destinationGroupList.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Por favor, selecione um grupo de destino válido.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+      final destinationGroup = destinationGroupList.first;
 
       final result = await widget.controller.saveTransfer(
         description: _descriptionController.text,
         amount: amount,
         date: _selectedDate,
-        sourceGroupId: _selectedSourceGroupId!,
-        sourceGroupName: sourceGroup.name,
         destinationGroupId: _selectedDestinationGroupId!,
         destinationGroupName: destinationGroup.name,
         observation: _observationController.text,

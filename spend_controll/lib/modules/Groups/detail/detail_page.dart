@@ -352,10 +352,10 @@ class _DetailPageState extends State<DetailPage>
   }
 
   Widget _buildTransactionsTab(BuildContext context, DetailState state) {
-    final expenses = state.selectedMemberId != null
-        ? state.filteredExpenses
-        : state.expenses;
-    if (expenses.isEmpty) {
+    final transactions = state.selectedMemberId != null
+        ? state.filteredTransactions
+        : state.transactions;
+    if (transactions.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -401,10 +401,10 @@ class _DetailPageState extends State<DetailPage>
         Expanded(
           child: ListView.builder(
             padding: const EdgeInsets.all(16.0),
-            itemCount: expenses.length,
+            itemCount: transactions.length,
             itemBuilder: (context, index) {
-              final expense = expenses[index];
-              return _buildExpenseItem(context, expense, state);
+              final transaction = transactions[index];
+              return _buildExpenseItem(context, transaction, state);
             },
           ),
         ),
@@ -441,6 +441,18 @@ class _DetailPageState extends State<DetailPage>
               'Data: ${_formatDate(expense.createdAt)}',
               style: const TextStyle(fontSize: 12),
             ),
+            if (expense.type == 'transfer' && expense.receiptImageUrl != null)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.network(
+                    expense.receiptImageUrl!,
+                    height: 80,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
           ],
         ),
         trailing: Row(

@@ -74,7 +74,7 @@ class DetailController extends Cubit<DetailState> {
       emit(state.copyWith(
         contributionStatus: ContributionStatus.loaded,
         memberContributions: memberContributions,
-        expenses: expenses,
+        transactions: expenses,
       ));
     } catch (e) {
       emit(state.copyWith(
@@ -162,19 +162,19 @@ class DetailController extends Cubit<DetailState> {
     if (memberId == null) {
       emit(state.copyWith(
         selectedMemberId: null,
-        filteredExpenses: state.expenses,
+        filteredTransactions: state.transactions,
       ));
       return;
     }
 
-    final filteredExpenses = state.expenses.where((expense) {
-      return expense.payerUserId == memberId ||
-          expense.participantsUserIds.contains(memberId);
+    final filteredTransactions = state.transactions.where((transaction) {
+      return transaction.payerUserId == memberId ||
+          transaction.participantsUserIds.contains(memberId);
     }).toList();
 
     emit(state.copyWith(
       selectedMemberId: memberId,
-      filteredExpenses: filteredExpenses,
+      filteredTransactions: filteredTransactions,
     ));
   }
 

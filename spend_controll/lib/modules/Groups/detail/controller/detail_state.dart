@@ -17,8 +17,8 @@ class DetailState {
   // Member contribution and expenses
   final ContributionStatus contributionStatus;
   final List<MemberContribution> memberContributions;
-  final List<Expense> expenses;
-  final List<Expense> filteredExpenses;
+  final List<Expense> transactions;
+  final List<Expense> filteredTransactions;
   final String? selectedMemberId;
 
   const DetailState({
@@ -28,8 +28,8 @@ class DetailState {
     this.errorMessage,
     this.contributionStatus = ContributionStatus.initial,
     this.memberContributions = const [],
-    this.expenses = const [],
-    this.filteredExpenses = const [],
+    this.transactions = const [],
+    this.filteredTransactions = const [],
     this.selectedMemberId,
   });
 
@@ -40,8 +40,8 @@ class DetailState {
         errorMessage = '',
         contributionStatus = ContributionStatus.initial,
         memberContributions = const [],
-        expenses = const [],
-        filteredExpenses = const [],
+        transactions = const [],
+        filteredTransactions = const [],
         selectedMemberId = null;
 
   List<Object?> get props => [
@@ -51,8 +51,8 @@ class DetailState {
         groups,
         contributionStatus,
         memberContributions,
-        expenses,
-        filteredExpenses,
+        transactions,
+        filteredTransactions,
         selectedMemberId,
       ];
 
@@ -63,8 +63,8 @@ class DetailState {
     DetailErrorType? errorType,
     ContributionStatus? contributionStatus,
     List<MemberContribution>? memberContributions,
-    List<Expense>? expenses,
-    List<Expense>? filteredExpenses,
+    List<Expense>? transactions,
+    List<Expense>? filteredTransactions,
     String? selectedMemberId,
   }) {
     return DetailState(
@@ -74,8 +74,8 @@ class DetailState {
       errorMessage: errorMessage ?? this.errorMessage,
       contributionStatus: contributionStatus ?? this.contributionStatus,
       memberContributions: memberContributions ?? this.memberContributions,
-      expenses: expenses ?? this.expenses,
-      filteredExpenses: filteredExpenses ?? this.filteredExpenses,
+      transactions: transactions ?? this.transactions,
+      filteredTransactions: filteredTransactions ?? this.filteredTransactions,
       selectedMemberId: selectedMemberId ?? this.selectedMemberId,
     );
   }

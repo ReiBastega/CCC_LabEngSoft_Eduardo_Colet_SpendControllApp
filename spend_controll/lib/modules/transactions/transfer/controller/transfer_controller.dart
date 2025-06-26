@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart' as fs;
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:spend_controll/modules/transactions/model/group_model.dart';
 
 import 'transfer_state.dart';
@@ -34,7 +39,7 @@ class TransferController extends ChangeNotifier {
 
       final groupsSnapshot = await _firestore
           .collection('groups')
-          .where('members', arrayContains: user.uid)
+          .where('memberUserIds', arrayContains: user.uid)
           .get();
 
       final groups = groupsSnapshot.docs.map((doc) {
@@ -62,11 +67,10 @@ class TransferController extends ChangeNotifier {
     required String description,
     required double amount,
     required DateTime date,
-    required String sourceGroupId,
-    required String sourceGroupName,
     required String destinationGroupId,
     required String destinationGroupName,
     String? observation,
+    XFile? receiptImage,
   }) async {
     try {
       _updateState(_state.copyWith(isSaving: true, hasError: false));
@@ -81,33 +85,34 @@ class TransferController extends ChangeNotifier {
         return false;
       }
 
-      // Criar transação no Firestore
       final transactionRef = _firestore.collection('transactions').doc();
+
+      String? receiptUrl;
+      if (receiptImage != null) {
+        final storageRef =
+            FirebaseStorage.instance.ref('receipts/${transactionRef.id}.jpg');
+        final uploadTask = await storageRef.putFile(
+          File(receiptImage.path),
+          fs.SettableMetadata(contentType: 'image/jpeg'),
+        );
+        receiptUrl = await uploadTask.ref.getDownloadURL();
+      }
 
       await transactionRef.set({
         'id': transactionRef.id,
+        'groupId': destinationGroupId,
         'description': description,
         'amount': amount,
         'date': Timestamp.fromDate(date),
         'type': 'transfer',
-        'sourceGroupId': sourceGroupId,
-        'sourceGroupName': sourceGroupName,
-        'destinationGroupId': destinationGroupId,
         'destinationGroupName': destinationGroupName,
         'userId': user.uid,
         'userName': user.displayName ?? 'Usuário',
         'observation': observation,
+        'receiptImageUrl': receiptUrl,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // Atualizar saldo do grupo de origem (reduzir o valor)
-      await _firestore.collection('groups').doc(sourceGroupId).update({
-        'balance': FieldValue.increment(-amount),
-        'lastTransaction': Timestamp.fromDate(date),
-        'lastTransactionType': 'transfer_out',
-      });
-
-      // Atualizar saldo do grupo de destino (aumentar o valor)
       await _firestore.collection('groups').doc(destinationGroupId).update({
         'balance': FieldValue.increment(amount),
         'lastTransaction': Timestamp.fromDate(date),
