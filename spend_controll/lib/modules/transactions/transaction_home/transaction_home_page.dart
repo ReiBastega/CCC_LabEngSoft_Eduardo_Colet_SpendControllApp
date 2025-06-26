@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:spend_controll/modules/transactions/model/group_model.dart';
 import 'package:spend_controll/modules/transactions/model/transaction_model.dart';
+import 'package:spend_controll/modules/transactions/transaction_home/controller/transaction_home_state.dart';
+import 'package:spend_controll/shared/widgets/appBar.dart';
 import 'package:spend_controll/shared/widgets/transaction_empty_state.dart';
 import 'package:spend_controll/shared/widgets/transaction_filter_widget.dart';
 import 'package:spend_controll/shared/widgets/transaction_list_item.dart';
@@ -49,66 +51,51 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final Transaction? initialTransaction = Modular.args.data as Transaction?;
-
-    if (initialTransaction != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        _showTransactionDetails(initialTransaction);
-      });
-    }
-
-    return BlocBuilder(
-        bloc: widget.controller,
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              title: const Text('Transações'),
-              actions: [
-                IconButton(
-                  icon: const Icon(Icons.search),
-                  onPressed: () {
-                    _showSearchDialog();
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.filter_list),
-                  onPressed: () {
-                    _showFilterBottomSheet();
-                  },
-                ),
-              ],
-            ),
-            body: RefreshIndicator(
-              onRefresh: () async {
-                await widget.controller.refreshTransactions();
-              },
-              child: AnimatedBuilder(
-                animation: controller,
-                builder: (context, state) {
-                  if (controller.state.isLoading &&
-                      controller.state.transactions.isEmpty) {
-                    return const TransactionLoadingWidget();
-                  }
-
-                  if (controller.state.hasError &&
-                      controller.state.transactions.isEmpty) {
-                    return _buildErrorState();
-                  }
-
-                  if (controller.state.transactions.isEmpty) {
-                    return const TransactionEmptyState();
-                  }
-
-                  return _buildTransactionsList();
+    return BlocBuilder<TransactionHomeController, TransactionHomeState>(
+      bloc: widget.controller,
+      builder: (context, state) {
+        return Scaffold(
+          appBar: AppBarWidget(
+            pageTitle: 'Transações',
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.search),
+                onPressed: () {
+                  _showSearchDialog();
                 },
               ),
-            ),
-            floatingActionButton: _buildFloatingActionButton(),
-          );
-        });
+              IconButton(
+                icon: const Icon(Icons.filter_list),
+                onPressed: () {
+                  _showFilterBottomSheet();
+                },
+              ),
+            ],
+          ),
+          body: RefreshIndicator(
+            onRefresh: () async => widget.controller.refreshTransactions(),
+            child: _buildBody(state),
+          ),
+          floatingActionButton: _buildFloatingActionButton(),
+        );
+      },
+    );
   }
 
-  Widget _buildTransactionsList() {
+  Widget _buildBody(TransactionHomeState state) {
+    if (state.isLoading && state.transactions.isEmpty) {
+      return const TransactionLoadingWidget();
+    }
+    if (state.hasError && state.transactions.isEmpty) {
+      return _buildErrorState();
+    }
+    if (state.transactions.isEmpty) {
+      return const TransactionEmptyState();
+    }
+    return _buildTransactionsList(state);
+  }
+
+  Widget _buildTransactionsList(TransactionHomeState state) {
     return Column(
       children: [
         Padding(
@@ -129,8 +116,8 @@ class _TransactionHomePageState extends State<TransactionHomePage> {
           child: ListView.builder(
             controller: _scrollController,
             padding: const EdgeInsets.only(bottom: 80),
-            itemCount: controller.state.transactions.length +
-                (controller.state.hasMoreTransactions ? 1 : 0),
+            itemCount:
+                state.transactions.length + (state.hasMoreTransactions ? 1 : 0),
             itemBuilder: (context, index) {
               if (index == controller.state.transactions.length) {
                 return const Center(

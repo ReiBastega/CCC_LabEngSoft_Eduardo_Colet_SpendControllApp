@@ -48,21 +48,21 @@ class TransactionHomeController extends Cubit<TransactionHomeState>
 
   Future<void> refreshTransactions() async {
     _lastDocument = null;
-
     try {
-      final transactions = await _fetchTransactions();
-
-      final totals = _calculateTotals(transactions);
-
+      final txs = await _fetchTransactions();
+      final totals = _calculateTotals(txs);
       emit(state.copyWith(
-        transactions: transactions,
+        isLoading: false,
+        isLoadingMore: false,
+        transactions: txs,
         totalIncome: totals.income,
         totalExpense: totals.expense,
         totalTransfer: totals.transfer,
-        hasMoreTransactions: transactions.length >= _pageSize,
+        hasMoreTransactions: txs.length >= _pageSize,
       ));
     } catch (e) {
       emit(state.copyWith(
+        isLoading: false,
         hasError: true,
         errorMessage: e.toString(),
       ));
