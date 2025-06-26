@@ -66,7 +66,7 @@ class DetailController extends Cubit<DetailState> {
     try {
       final memberDetails = await _loadMemberDetails(group);
 
-      final expenses = await service.getGroupExpensesSync(group.id);
+      final expenses = await service.getGroupTransactions(group.id);
 
       final memberContributions =
           _calculateMemberContributions(memberDetails, expenses);
@@ -125,54 +125,37 @@ class DetailController extends Cubit<DetailState> {
 
   List<MemberContribution> _calculateMemberContributions(
     Map<String, UserDetails> memberDetails,
-    List<Expense> expenses,
+    List<Expense> transactions,
   ) {
-    final Map<String, double> totalPaid = {};
-    final Map<String, double> totalOwed = {};
+    final owed = {for (var id in memberDetails.keys) id: 0.0};
+    final paid = {for (var id in memberDetails.keys) id: 0.0};
 
-    for (final memberId in memberDetails.keys) {
-      totalPaid[memberId] = 0;
-      totalOwed[memberId] = 0;
-    }
+    for (final tx in transactions) {
+      if (tx.type == 'expense') {
+        final participants = tx.participantsUserIds.isNotEmpty
+            ? tx.participantsUserIds
+            : memberDetails.keys.toList();
+        final share = tx.amount / participants.length;
 
-    for (final expense in expenses) {
-      if (totalPaid.containsKey(expense.payerUserId)) {
-        totalPaid[expense.payerUserId] =
-            (totalPaid[expense.payerUserId] ?? 0) + expense.amount;
-      }
-
-      final participantsCount = expense.participantsUserIds.length;
-      if (participantsCount > 0) {
-        final amountPerPerson = expense.amount / participantsCount;
-
-        for (final participantId in expense.participantsUserIds) {
-          if (totalOwed.containsKey(participantId)) {
-            totalOwed[participantId] =
-                (totalOwed[participantId] ?? 0) + amountPerPerson;
-          }
+        for (final u in participants) {
+          owed[u] = owed[u]! + share;
         }
+      } else if (tx.type == 'transfer') {
+        paid[tx.payerUserId] = paid[tx.payerUserId]! + tx.amount;
       }
     }
 
-    final List<MemberContribution> contributions = [];
-
-    for (final memberId in memberDetails.keys) {
-      final paid = totalPaid[memberId] ?? 0;
-      final owed = totalOwed[memberId] ?? 0;
-      final balance = paid - owed;
-
-      contributions.add(MemberContribution(
-        userId: memberId,
-        userDetails: memberDetails[memberId]!,
-        totalPaid: paid,
-        totalOwed: owed,
-        balance: balance,
-      ));
-    }
-
-    contributions.sort((a, b) => a.balance.compareTo(b.balance));
-
-    return contributions;
+    return memberDetails.keys.map((userId) {
+      final tPaid = paid[userId]!;
+      final tOwed = owed[userId]!;
+      return MemberContribution(
+        userId: userId,
+        userDetails: memberDetails[userId]!,
+        totalPaid: tPaid,
+        totalOwed: tOwed,
+        balance: tPaid - tOwed,
+      );
+    }).toList();
   }
 
   void filterExpensesByMember(String? memberId) {

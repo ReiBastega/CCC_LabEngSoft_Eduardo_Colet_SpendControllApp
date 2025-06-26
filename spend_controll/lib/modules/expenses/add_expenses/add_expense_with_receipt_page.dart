@@ -38,10 +38,8 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
       service: context.read<Service>(),
     );
 
-    // Inicializa com o usuário atual como pagador
     _selectedMemberId = context.read<Service>().getCurrentUserId();
 
-    // Inicializa com todos os membros como participantes
     _selectedParticipantIds = List.from(widget.group.memberUserIds);
   }
 
@@ -60,7 +58,6 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
       ],
       child: BlocConsumer<ReceiptUploadController, ReceiptUploadState>(
         listener: (context, state) {
-          // Exibe mensagens de erro
           if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -71,7 +68,6 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
             _receiptController.clearError();
           }
 
-          // Quando o upload estiver completo, navega de volta
           if (state.status == UploadStatus.complete) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -92,27 +88,14 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Campos de entrada para a despesa
                   _buildExpenseForm(context),
-
                   const SizedBox(height: 24),
-
-                  // Seleção de pagador
                   _buildPayerSelection(context),
-
                   const SizedBox(height: 24),
-
-                  // Seleção de participantes
                   _buildParticipantsSelection(context),
-
                   const SizedBox(height: 24),
-
-                  // Seção de upload de comprovante
                   _buildReceiptUploadSection(context, state),
-
                   const SizedBox(height: 32),
-
-                  // Botão de salvar
                   _buildSaveButton(context, state),
                 ],
               ),
@@ -226,7 +209,6 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
 
             return Column(
               children: [
-                // Opção para selecionar todos
                 CheckboxListTile(
                   title: const Text('Selecionar todos'),
                   value: _selectedParticipantIds.length ==
@@ -243,7 +225,6 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
                   },
                 ),
                 const Divider(),
-                // Lista de membros
                 ...memberNames.entries.map((entry) {
                   return CheckboxListTile(
                     title: Text(entry.value),
@@ -282,8 +263,6 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
-
-        // Visualização da imagem selecionada
         if (state.imageFile != null)
           Stack(
             alignment: Alignment.topRight,
@@ -310,7 +289,6 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
             ],
           )
         else
-          // Botões para selecionar imagem
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -330,8 +308,6 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
               ),
             ],
           ),
-
-        // Indicador de progresso durante upload
         if (state.status == UploadStatus.uploading)
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
@@ -430,37 +406,34 @@ class _AddExpenseWithReceiptPageState extends State<AddExpenseWithReceiptPage> {
     }
 
     try {
-      // Cria a despesa
       final amount = double.parse(_amountController.text);
       final expenseId = await context.read<Service>().addExpenseWithId(
             Expense(
-              id: '', // Será gerado pelo Firebase
+              id: '',
               groupId: widget.group.id,
               description: _descriptionController.text,
               amount: amount,
-              categoryId: '', // Implementação futura
+              categoryId: '',
               payerUserId: _selectedMemberId!,
               participantsUserIds: _selectedParticipantIds,
               createdAt: Timestamp.now(),
-              receiptImageUrl: null, // Será atualizado após o upload
+              receiptImageUrl: null,
               createdByUserId: context.read<Service>().getCurrentUserId()!,
+              type: '',
             ),
           );
 
-      // Se tem comprovante, faz o upload
       if (_receiptController.state.imageFile != null) {
         await _receiptController.uploadReceipt(
           groupId: widget.group.id,
           expenseId: expenseId,
         );
 
-        // Atualiza a despesa com a URL do comprovante
         await _receiptController.updateExpenseWithReceipt(
           groupId: widget.group.id,
           expenseId: expenseId,
         );
       } else {
-        // Se não tem comprovante, apenas finaliza o fluxo
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text('Despesa adicionada com sucesso!'),

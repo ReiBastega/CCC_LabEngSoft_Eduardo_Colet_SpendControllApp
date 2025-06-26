@@ -35,14 +35,10 @@ class _DetailPageState extends State<DetailPage>
   late final TabController _tabController;
 
   @override
+  @override
   void initState() {
     super.initState();
     widget.detailController.loadGroupDetail(widget.groupId!);
-    final group = widget.detailController.state.groups;
-    if (group != null) {
-      widget.detailController.loadMembersWithContributions(group);
-    }
-
     _tabController = TabController(length: 2, vsync: this);
   }
 
@@ -65,10 +61,18 @@ class _DetailPageState extends State<DetailPage>
           if (detailState.status == DetailStatus.failure) {
             return Center(child: Text('Erro: ${detailState.errorMessage}'));
           }
-          final group = detailState.groups!;
+          final group = detailState.groups;
+          if (group != null &&
+              detailState.memberContributions.isEmpty &&
+              detailState.contributionStatus != ContributionStatus.loading) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              widget.detailController.loadMembersWithContributions(group);
+            });
+            return const Center(child: CircularProgressIndicator());
+          }
           return Column(
             children: [
-              _buildGroupHeader(context, group),
+              _buildGroupHeader(context, group!),
               TabBar(
                 controller: _tabController,
                 tabs: const [
@@ -348,9 +352,6 @@ class _DetailPageState extends State<DetailPage>
   }
 
   Widget _buildTransactionsTab(BuildContext context, DetailState state) {
-    if (state.status == ContributionStatus.loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
     final expenses = state.selectedMemberId != null
         ? state.filteredExpenses
         : state.expenses;

@@ -115,15 +115,17 @@ class Service {
     }
 
     final expenseToAdd = Expense(
-        id: '',
-        groupId: expense.groupId,
-        description: expense.description,
-        amount: expense.amount,
-        categoryId: expense.categoryId,
-        payerUserId: expense.payerUserId,
-        participantsUserIds: expense.participantsUserIds,
-        createdAt: Timestamp.now(),
-        createdByUserId: userId);
+      id: '',
+      groupId: expense.groupId,
+      description: expense.description,
+      amount: expense.amount,
+      categoryId: expense.categoryId,
+      payerUserId: expense.payerUserId,
+      participantsUserIds: expense.participantsUserIds,
+      createdAt: Timestamp.now(),
+      createdByUserId: userId,
+      type: expense.type,
+    );
 
     await firestore
         .collection('groups')
@@ -132,7 +134,6 @@ class Service {
         .add(expenseToAdd.toFirestore());
   }
 
-  // Atualiza uma despesa existente
   Future<void> updateExpense(Expense expense) async {
     final userId = getCurrentUserId();
     if (userId == null) {
@@ -361,39 +362,25 @@ class Service {
     }
   }
 
-  Future<List<Expense>> getGroupExpensesSync(String groupId) async {
-    final userId = getCurrentUserId();
-    if (userId == null) {
-      return [];
-    }
-
-    if (groupId.isEmpty) {
-      throw Exception("ID do grupo inválido.");
-    }
-
-    final result = await FirebaseFirestore.instance
-        .collection('groups')
-        .doc(groupId)
-        .collection('expenses')
+  Future<List<Expense>> getGroupTransactions(String groupId) async {
+    final snap = await firestore
+        .collection('transactions')
+        .where('groupId', isEqualTo: groupId)
         .orderBy('createdAt', descending: true)
         .get();
 
-    return result.docs.map((doc) {
-      final data = doc.data();
-      return Expense(
-        id: doc.id,
-        groupId: groupId,
-        description: data['description'] ?? '',
-        amount: (data['amount'] ?? 0).toDouble(),
-        categoryId: data['categoryId'] ?? '',
-        payerUserId: data['payerUserId'] ?? '',
-        participantsUserIds:
-            List<String>.from(data['participantsUserIds'] ?? []),
-        createdAt: data['createdAt'] ?? Timestamp.now(),
-        createdByUserId: data['createdByUserId'] ?? '',
-        receiptImageUrl: data['receiptImageUrl'],
-      );
-    }).toList();
+    return snap.docs.map((d) => Expense.fromFirestore(d)).toList();
+  }
+
+  Future<List<Expense>> getGroupExpensesSync(String groupId) async {
+    final snap = await firestore
+        .collection('transactions')
+        .where('groupId', isEqualTo: groupId)
+        .where('type', isEqualTo: 'expense')
+        .orderBy('createdAt', descending: true)
+        .get();
+
+    return snap.docs.map((doc) => Expense.fromFirestore(doc)).toList();
   }
 
   Future<String> addExpenseWithId(Expense expense) async {
@@ -421,6 +408,7 @@ class Service {
       createdAt: Timestamp.now(),
       createdByUserId: userId,
       receiptImageUrl: expense.receiptImageUrl,
+      type: expense.type,
     );
 
     final docRef = await FirebaseFirestore.instance

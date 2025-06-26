@@ -4,7 +4,7 @@ enum ExpenseStatus { initial, loading, loaded, error, success }
 
 class ExpenseState {
   final ExpenseStatus status;
-  final List<Expense> expenses; // Lista de despesas do grupo selecionado
+  final List<Expense> expenses;
   final String? errorMessage;
 
   const ExpenseState({
@@ -24,7 +24,6 @@ class ExpenseState {
     ExpenseStatus? status,
     List<Expense>? expenses,
     String? errorMessage,
-    // Limpa a mensagem de erro se um novo status for definido sem erro
     bool clearErrorMessage = false,
   }) {
     return ExpenseState(

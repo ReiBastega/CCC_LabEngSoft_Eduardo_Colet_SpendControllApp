@@ -36,21 +36,17 @@ class ReportController extends ChangeNotifier {
     try {
       _updateState(_state.copyWith(isLoading: true, hasError: false));
 
-      // Load available groups and categories for filtering
       await _loadGroups();
       await _loadCategories();
 
-      // Load transactions for the selected period
       final transactions = await _fetchTransactions();
 
-      // Process data for charts and insights
       final expensesByCategory = _calculateExpensesByCategory(transactions);
       final incomesByCategory = _calculateIncomesByCategory(transactions);
       final totalsByGroup = _calculateTotalsByGroup(transactions);
       final dailyTotals = _calculateDailyTotals(transactions);
       final monthlyComparison = await _calculateMonthlyComparison();
 
-      // Calculate totals
       double totalIncome = 0;
       double totalExpense = 0;
 
@@ -88,17 +84,13 @@ class ReportController extends ChangeNotifier {
       throw Exception('Usuário não autenticado');
     }
 
-    // Build query based on filters
     Query query = _firestore.collection('transactions');
 
-    // Apply user filter (only show user's transactions)
     query = query.where('userId', isEqualTo: user.uid);
 
-    // Apply date range filter
     query = query.where('date',
         isGreaterThanOrEqualTo: Timestamp.fromDate(_state.period.start));
 
-    // Add one day to include the end date fully
     final endDatePlusOne = DateTime(
       _state.period.end.year,
       _state.period.end.month,
@@ -106,29 +98,23 @@ class ReportController extends ChangeNotifier {
     );
     query = query.where('date', isLessThan: Timestamp.fromDate(endDatePlusOne));
 
-    // Apply group filter if set
     if (_state.filter.groupIds != null && _state.filter.groupIds!.isNotEmpty) {
       query = query.where('groupId', whereIn: _state.filter.groupIds);
     }
 
-    // Order by date
     query = query.orderBy('date', descending: true);
 
-    // Execute query
     final querySnapshot = await query.get();
 
-    // Convert to Transaction objects
     return querySnapshot.docs
         .map((doc) {
           final data = doc.data() as Map<String, dynamic>;
 
-          // Skip transfers if not included in filter
           if (!_state.filter.includeTransfers &&
               _parseTransactionType(data['type']) == TransactionType.transfer) {
             return null;
           }
 
-          // Skip categories not in filter if categories are specified
           if (_state.filter.categories != null &&
               _state.filter.categories!.isNotEmpty &&
               !_state.filter.categories!.contains(data['category'])) {

@@ -15,7 +15,6 @@ class ExpenseController extends Cubit<ExpenseState> {
   ExpenseController({required this.service})
       : super(const ExpenseState.initial());
 
-  // Carrega as despesas de um grupo específico
   void loadGroupExpenses(String groupId) {
     if (groupId.isEmpty) {
       emit(state.copyWith(
@@ -24,7 +23,6 @@ class ExpenseController extends Cubit<ExpenseState> {
           clearErrorMessage: true));
       return;
     }
-    // Se já estiver ouvindo o mesmo grupo, não faz nada
     if (_currentGroupId == groupId &&
         state.status != ExpenseStatus.initial &&
         state.status != ExpenseStatus.error) {
@@ -34,7 +32,7 @@ class ExpenseController extends Cubit<ExpenseState> {
     _currentGroupId = groupId;
     emit(
         state.copyWith(status: ExpenseStatus.loading, clearErrorMessage: true));
-    _expensesSubscription?.cancel(); // Cancela inscrição anterior
+    _expensesSubscription?.cancel();
 
     _expensesSubscription =
         service.getGroupExpenses(groupId).listen((expenses) {
@@ -49,22 +47,18 @@ class ExpenseController extends Cubit<ExpenseState> {
     });
   }
 
-  // Adiciona uma nova despesa
   Future<void> addExpense(Expense expense) async {
     emit(
         state.copyWith(status: ExpenseStatus.loading, clearErrorMessage: true));
     try {
       await service.addExpense(expense);
-      // O stream deve atualizar a lista, emitimos success para feedback
       emit(state.copyWith(
           status: ExpenseStatus.success, clearErrorMessage: true));
-      // Não precisa recarregar explicitamente, o stream faz isso.
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: ExpenseStatus.error,
           errorMessage: "Erro de autenticação: ${e.message}"));
     } on Exception catch (e) {
-      // Captura exceções gerais do Service (dados inválidos, etc)
       emit(state.copyWith(
           status: ExpenseStatus.error,
           errorMessage: "Erro ao adicionar despesa: ${e.toString()}"));
@@ -76,7 +70,6 @@ class ExpenseController extends Cubit<ExpenseState> {
     }
   }
 
-  // Atualiza uma despesa existente
   Future<void> updateExpense(Expense expense) async {
     emit(
         state.copyWith(status: ExpenseStatus.loading, clearErrorMessage: true));
@@ -84,7 +77,6 @@ class ExpenseController extends Cubit<ExpenseState> {
       await service.updateExpense(expense);
       emit(state.copyWith(
           status: ExpenseStatus.success, clearErrorMessage: true));
-      // Stream atualizará
     } on FirebaseAuthException catch (e) {
       emit(state.copyWith(
           status: ExpenseStatus.error,
@@ -101,7 +93,6 @@ class ExpenseController extends Cubit<ExpenseState> {
     }
   }
 
-  // Deleta uma despesa
   Future<void> deleteExpense(String groupId, String expenseId) async {
     emit(
         state.copyWith(status: ExpenseStatus.loading, clearErrorMessage: true));
@@ -125,7 +116,6 @@ class ExpenseController extends Cubit<ExpenseState> {
     }
   }
 
-  // Limpa a inscrição do stream ao descartar o controller
   @override
   Future<void> close() {
     _expensesSubscription?.cancel();
