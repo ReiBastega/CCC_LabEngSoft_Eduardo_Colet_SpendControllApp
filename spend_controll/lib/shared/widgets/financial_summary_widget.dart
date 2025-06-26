@@ -73,14 +73,12 @@ class FinancialSummaryWidget extends StatelessWidget {
   }
 
   Widget _buildChart(BuildContext context, double income, double expense) {
-    // Se não houver dados, mostrar mensagem
     if (income == 0 && expense == 0) {
       return const Center(
         child: Text('Sem dados financeiros para o mês atual'),
       );
     }
 
-    // Definir dados para o gráfico
     final barGroups = [
       BarChartGroupData(
         x: 0,

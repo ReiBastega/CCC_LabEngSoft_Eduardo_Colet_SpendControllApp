@@ -56,8 +56,6 @@ class _TransactionFilterWidgetState extends State<TransactionFilterWidget> {
           ),
           const Divider(),
           const SizedBox(height: 16),
-
-          // Type filter
           Text(
             'Tipo de Transação',
             style: Theme.of(context).textTheme.titleMedium,
@@ -79,7 +77,6 @@ class _TransactionFilterWidgetState extends State<TransactionFilterWidget> {
             ),
           ),
           const SizedBox(height: 24),
-
           Text(
             'Grupo',
             style: Theme.of(context).textTheme.titleMedium,
@@ -110,7 +107,6 @@ class _TransactionFilterWidgetState extends State<TransactionFilterWidget> {
             },
           ),
           const SizedBox(height: 24),
-
           Text(
             'Período',
             style: Theme.of(context).textTheme.titleMedium,
@@ -130,7 +126,6 @@ class _TransactionFilterWidgetState extends State<TransactionFilterWidget> {
               ],
             ),
           ),
-
           if (_isCustomDateRange())
             Padding(
               padding: const EdgeInsets.only(top: 16.0),
@@ -178,9 +173,7 @@ class _TransactionFilterWidgetState extends State<TransactionFilterWidget> {
                 ],
               ),
             ),
-
           const SizedBox(height: 24),
-
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
@@ -193,7 +186,6 @@ class _TransactionFilterWidgetState extends State<TransactionFilterWidget> {
               child: const Text('Aplicar Filtros'),
             ),
           ),
-
           if (_hasActiveFilters())
             Padding(
               padding: const EdgeInsets.only(top: 8.0),
@@ -209,7 +201,6 @@ class _TransactionFilterWidgetState extends State<TransactionFilterWidget> {
                 ),
               ),
             ),
-
           SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
         ],
       ),
@@ -293,7 +284,6 @@ class _TransactionFilterWidgetState extends State<TransactionFilterWidget> {
                 );
                 break;
               case 'custom':
-                // Keep current dates or set defaults
                 _filter = _filter.copyWith(
                   startDate:
                       _filter.startDate ?? DateTime(now.year, now.month, 1),

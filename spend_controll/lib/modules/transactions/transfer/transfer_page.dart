@@ -94,7 +94,6 @@ class _TransferPageState extends State<TransferPage> {
       child: ListView(
         padding: const EdgeInsets.all(16.0),
         children: [
-          // Descrição
           TextFormField(
             controller: _descriptionController,
             decoration: const InputDecoration(
@@ -115,8 +114,6 @@ class _TransferPageState extends State<TransferPage> {
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16),
-
-          // Valor
           TextFormField(
             controller: _amountController,
             decoration: const InputDecoration(
@@ -147,8 +144,6 @@ class _TransferPageState extends State<TransferPage> {
             textInputAction: TextInputAction.next,
           ),
           const SizedBox(height: 16),
-
-          // Data
           InkWell(
             onTap: () => _selectDate(context),
             child: InputDecorator(
@@ -163,7 +158,6 @@ class _TransferPageState extends State<TransferPage> {
             ),
           ),
           const SizedBox(height: 16),
-
           DropdownButtonFormField<String>(
             decoration: const InputDecoration(
               labelText: 'Grupo de destino',
@@ -191,8 +185,6 @@ class _TransferPageState extends State<TransferPage> {
             },
           ),
           const SizedBox(height: 16),
-
-          // Observações
           TextFormField(
             controller: _observationController,
             decoration: const InputDecoration(
@@ -204,7 +196,6 @@ class _TransferPageState extends State<TransferPage> {
             maxLines: 3,
           ),
           const SizedBox(height: 16),
-
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -239,7 +230,6 @@ class _TransferPageState extends State<TransferPage> {
             ],
           ),
           const SizedBox(height: 24),
-
           ElevatedButton(
             onPressed: widget.controller.state.isSaving ? null : _saveTransfer,
             style: ElevatedButton.styleFrom(

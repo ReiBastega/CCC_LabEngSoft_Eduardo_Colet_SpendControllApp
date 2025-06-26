@@ -44,8 +44,6 @@ class AddIncomeController extends ChangeNotifier {
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // **não** atualiza mais nenhum documento de grupo aqui
-
       _updateState(_state.copyWith(isSaving: false));
       return true;
     } catch (e) {
