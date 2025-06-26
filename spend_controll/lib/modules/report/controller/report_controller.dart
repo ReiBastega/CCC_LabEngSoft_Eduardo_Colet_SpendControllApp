@@ -3,10 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:spend_controll/modules/report/model/daily_total.dart';
-import 'package:spend_controll/modules/report/pdfGenerator/report_pdf_generator.dart';
 
 import '../../transactions/model/group_model.dart';
 import '../../transactions/model/transaction_model.dart';
@@ -16,7 +14,6 @@ class ReportController extends ChangeNotifier {
   ReportState _state = ReportState.initial();
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final ReportPdfGenerator _pdfGenerator = ReportPdfGenerator();
 
   ExportOptions _exportOptions = const ExportOptions(
     includeCharts: true,
@@ -367,38 +364,6 @@ class ReportController extends ChangeNotifier {
       includeInsights: includeInsights ?? _exportOptions.includeInsights,
     );
     notifyListeners();
-  }
-
-  Future<bool> generatePdf() async {
-    try {
-      _updateState(_state.copyWith(isGeneratingPdf: true));
-
-      final tempDir = await getTemporaryDirectory();
-      final fileName =
-          'relatorio_financeiro_${DateFormat('yyyyMMdd').format(DateTime.now())}.pdf';
-      final filePath = '${tempDir.path}/$fileName';
-
-      await _pdfGenerator.generatePdf(
-        filePath: filePath,
-        state: _state,
-        options: _exportOptions,
-      );
-
-      _updateState(_state.copyWith(
-        isGeneratingPdf: false,
-        pdfPath: filePath,
-      ));
-
-      return true;
-    } catch (e) {
-      _updateState(_state.copyWith(
-        isGeneratingPdf: false,
-        hasError: true,
-        errorMessage: 'Erro ao gerar PDF: ${e.toString()}',
-      ));
-
-      return false;
-    }
   }
 
   Future<void> viewPdf() async {

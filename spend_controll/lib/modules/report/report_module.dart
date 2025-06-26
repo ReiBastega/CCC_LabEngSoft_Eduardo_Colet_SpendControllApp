@@ -13,6 +13,6 @@ class ReportModule extends Module {
         ChildRoute('/',
             child: (context, args) => ReportPage(
                   controller: Modular.get(),
-                ))
+                )),
       ];
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pdf/widgets.dart' as pw;
+import 'package:printing/printing.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:spend_controll/shared/widgets/daily_trend_chart_widget.dart';
 import 'package:spend_controll/shared/widgets/expense_chart_widget.dart';
 import 'package:spend_controll/shared/widgets/group_distribution_widget.dart';
@@ -24,7 +27,9 @@ class _ReportPageState extends State<ReportPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final ScrollController _scrollController = ScrollController();
-
+  final ScreenshotController _overviewController = ScreenshotController();
+  final ScreenshotController _categoriesController = ScreenshotController();
+  final ScreenshotController _trendsController = ScreenshotController();
   @override
   void initState() {
     super.initState();
@@ -306,142 +311,151 @@ class _ReportPageState extends State<ReportPage>
   }
 
   Widget _buildOverviewTab() {
-    return ListView(
-      padding: const EdgeInsets.all(16.0),
-      children: [
-        const Text(
-          'Distribuição por Grupo',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    return Screenshot(
+      controller: _overviewController,
+      child: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          const Text(
+            'Distribuição por Grupo',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 300,
-          child: GroupDistributionWidget(
-            groupData: widget.controller.state.totalsByGroup,
+          const SizedBox(height: 16),
+          AspectRatio(
+            aspectRatio: 1.6,
+            child: GroupDistributionWidget(
+              groupData: widget.controller.state.totalsByGroup,
+            ),
           ),
-        ),
-        const Divider(height: 32),
-        const Text(
-          'Resumo de Transações',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          const Divider(height: 32),
+          const Text(
+            'Resumo de Transações',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        TransactionSummaryWidget(
-          transactions: widget.controller.state.transactions,
-        ),
-        const Divider(height: 32),
-        const Text(
-          'Insights',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          const SizedBox(height: 16),
+          TransactionSummaryWidget(
+            transactions: widget.controller.state.transactions,
           ),
-        ),
-        const SizedBox(height: 16),
-        _buildInsightCard(
-          'Maior Despesa',
-          widget.controller.getLargestExpense(),
-          Icons.arrow_circle_down,
-          Colors.red,
-        ),
-        const SizedBox(height: 12),
-        _buildInsightCard(
-          'Maior Receita',
-          widget.controller.getLargestIncome(),
-          Icons.arrow_circle_up,
-          Colors.green,
-        ),
-        const SizedBox(height: 12),
-        _buildInsightCard(
-          'Categoria Mais Cara',
-          widget.controller.getMostExpensiveCategory(),
-          Icons.category,
-          Colors.orange,
-        ),
-        const SizedBox(height: 32),
-      ],
+          const Divider(height: 32),
+          const Text(
+            'Insights',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildInsightCard(
+            'Maior Despesa',
+            widget.controller.getLargestExpense(),
+            Icons.arrow_circle_down,
+            Colors.red,
+          ),
+          const SizedBox(height: 12),
+          _buildInsightCard(
+            'Maior Receita',
+            widget.controller.getLargestIncome(),
+            Icons.arrow_circle_up,
+            Colors.green,
+          ),
+          const SizedBox(height: 12),
+          _buildInsightCard(
+            'Categoria Mais Cara',
+            widget.controller.getMostExpensiveCategory(),
+            Icons.category,
+            Colors.orange,
+          ),
+          const SizedBox(height: 32),
+        ],
+      ),
     );
   }
 
   Widget _buildCategoriesTab() {
-    return ListView(
-      padding: const EdgeInsets.all(16.0),
-      children: [
-        const Text(
-          'Despesas por Categoria',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    return Screenshot(
+      controller: _categoriesController,
+      child: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          const Text(
+            'Despesas por Categoria',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 300,
-          child: ExpenseChartWidget(
-            expenseData: widget.controller.state.expensesByCategory,
+          const SizedBox(height: 16),
+          AspectRatio(
+            aspectRatio: 1.6,
+            child: ExpenseChartWidget(
+              expenseData: widget.controller.state.expensesByCategory,
+            ),
           ),
-        ),
-        const Divider(height: 32),
-        const Text(
-          'Receitas por Categoria',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          const Divider(height: 32),
+          const Text(
+            'Receitas por Categoria',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 300,
-          child: IncomeChartWidget(
-            incomeData: widget.controller.state.incomesByCategory,
+          const SizedBox(height: 16),
+          AspectRatio(
+            aspectRatio: 1.6,
+            child: IncomeChartWidget(
+              incomeData: widget.controller.state.incomesByCategory,
+            ),
           ),
-        ),
-        const SizedBox(height: 32),
-      ],
+          const SizedBox(height: 32),
+        ],
+      ),
     );
   }
 
   Widget _buildTrendsTab() {
-    return ListView(
-      padding: const EdgeInsets.all(16.0),
-      children: [
-        const Text(
-          'Comparativo Mensal',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+    return Screenshot(
+      controller: _trendsController,
+      child: ListView(
+        padding: const EdgeInsets.all(16.0),
+        children: [
+          const Text(
+            'Comparativo Mensal',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 300,
-          child: MonthlyComparisonWidget(
-            monthlyData: widget.controller.state.monthlyComparison,
+          const SizedBox(height: 16),
+          AspectRatio(
+            aspectRatio: 1.6,
+            child: MonthlyComparisonWidget(
+              monthlyData: widget.controller.state.monthlyComparison,
+            ),
           ),
-        ),
-        const Divider(height: 32),
-        const Text(
-          'Evolução Diária',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
+          const Divider(height: 32),
+          const Text(
+            'Evolução Diária',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        SizedBox(
-          height: 300,
-          child: DailyTrendChartWidget(
-            dailyTotals: widget.controller.state.dailyTotals,
+          const SizedBox(height: 16),
+          AspectRatio(
+            aspectRatio: 1.6,
+            child: DailyTrendChartWidget(
+              dailyTotals: widget.controller.state.dailyTotals,
+            ),
           ),
-        ),
-        const SizedBox(height: 32),
-      ],
+          const SizedBox(height: 32),
+        ],
+      ),
     );
   }
 
@@ -531,25 +545,12 @@ class _ReportPageState extends State<ReportPage>
 
   Widget _buildExportButton() {
     return FloatingActionButton.extended(
-      onPressed: widget.controller.state.isGeneratingPdf
-          ? null
-          : () {
-              _showExportOptions();
-            },
+      onPressed: () {
+        _generateAndSharePdf();
+      },
       backgroundColor: Theme.of(context).primaryColor,
-      label: widget.controller.state.isGeneratingPdf
-          ? const SizedBox(
-              width: 24,
-              height: 24,
-              child: CircularProgressIndicator(
-                color: Colors.white,
-                strokeWidth: 2,
-              ),
-            )
-          : const Text('Exportar PDF'),
-      icon: widget.controller.state.isGeneratingPdf
-          ? Container()
-          : const Icon(Icons.picture_as_pdf),
+      label: const Text('Exportar PDF'),
+      icon: const Icon(Icons.picture_as_pdf),
     );
   }
 
@@ -813,20 +814,38 @@ class _ReportPageState extends State<ReportPage>
   }
 
   Future<void> _generateAndSharePdf() async {
-    final result = await widget.controller.generatePdf();
+    final overviewImage = await _overviewController.capture();
+    final categoriesImage = await _categoriesController.capture();
+    final trendsImage = await _trendsController.capture();
 
-    if (result && mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('PDF gerado com sucesso!'),
-          backgroundColor: Colors.green,
+    final pdf = pw.Document();
+
+    if (overviewImage != null) {
+      pdf.addPage(pw.Page(
+        build: (context) => pw.Center(
+          child: pw.Image(pw.MemoryImage(overviewImage)),
         ),
-      );
-
-      if (widget.controller.state.pdfPath != null) {
-        _showPdfPreview();
-      }
+      ));
     }
+    if (categoriesImage != null) {
+      pdf.addPage(pw.Page(
+        build: (context) => pw.Center(
+          child: pw.Image(pw.MemoryImage(categoriesImage)),
+        ),
+      ));
+    }
+    if (trendsImage != null) {
+      pdf.addPage(pw.Page(
+        build: (context) => pw.Center(
+          child: pw.Image(pw.MemoryImage(trendsImage)),
+        ),
+      ));
+    }
+
+    final pdfBytes = await pdf.save();
+
+    // Compartilha o PDF
+    await Printing.sharePdf(bytes: pdfBytes, filename: 'relatorio.pdf');
   }
 
   void _showPdfPreview() {
