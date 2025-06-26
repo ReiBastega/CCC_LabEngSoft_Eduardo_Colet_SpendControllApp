@@ -7,7 +7,6 @@ import 'package:spend_controll/modules/Groups/detail/controller/detail_state.dar
 import 'package:spend_controll/modules/Groups/group/Controller/group_controller.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
 import 'package:spend_controll/modules/Groups/model/member_contribuition.dart';
-import 'package:spend_controll/modules/expenses/expense/controller/expense_controller.dart';
 import 'package:spend_controll/modules/expenses/expense/model/expense_model.dart';
 import 'package:spend_controll/shared/widgets/appBar.dart';
 import 'package:spend_controll/shared/widgets/custom_card.dart';
@@ -15,7 +14,6 @@ import 'package:spend_controll/shared/widgets/custom_card.dart';
 class DetailPage extends StatefulWidget {
   final DetailController detailController;
   final GroupController groupController;
-  final ExpenseController expenseController;
   final String? groupId;
 
   const DetailPage({
@@ -23,7 +21,6 @@ class DetailPage extends StatefulWidget {
     required this.detailController,
     required this.groupId,
     required this.groupController,
-    required this.expenseController,
   }) : assert(groupId != null, 'groupId must not be null');
 
   @override

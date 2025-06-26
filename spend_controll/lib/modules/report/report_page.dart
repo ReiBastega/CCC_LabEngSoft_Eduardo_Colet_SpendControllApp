@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:spend_controll/modules/report/model/daily_total.dart';
+import 'package:spend_controll/shared/widgets/daily_trend_chart_widget.dart';
 import 'package:spend_controll/shared/widgets/expense_chart_widget.dart';
 import 'package:spend_controll/shared/widgets/group_distribution_widget.dart';
 import 'package:spend_controll/shared/widgets/income_chart_widget.dart';
@@ -436,7 +436,7 @@ class _ReportPageState extends State<ReportPage>
         const SizedBox(height: 16),
         SizedBox(
           height: 300,
-          child: LineChart(
+          child: DailyTrendChartWidget(
             dailyTotals: widget.controller.state.dailyTotals,
           ),
         ),
@@ -970,57 +970,5 @@ class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   @override
   bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) {
     return false;
-  }
-}
-
-class LineChart extends StatelessWidget {
-  final List<DailyTotal> dailyTotals;
-
-  const LineChart({
-    super.key,
-    required this.dailyTotals,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.show_chart,
-              size: 64,
-              color: Theme.of(context).primaryColor.withOpacity(0.5),
-            ),
-            const SizedBox(height: 16),
-            const Text(
-              'Gráfico de Evolução Diária',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              '${dailyTotals.length} dias no período',
-              style: TextStyle(
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }

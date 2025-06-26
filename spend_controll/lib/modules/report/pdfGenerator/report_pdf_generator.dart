@@ -1,7 +1,8 @@
 import 'dart:io';
 
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:pdf/pdf.dart';
+import 'package:printing/printing.dart';
 import 'package:spend_controll/modules/report/controller/report_controller.dart';
 import 'package:spend_controll/modules/report/controller/report_state.dart';
 import 'package:spend_controll/modules/transactions/model/transaction_model.dart';
@@ -430,26 +431,11 @@ class ReportPdfGenerator {
   }
 
   Future<void> _convertHtmlToPdf(String html, String outputPath) async {
-    // Em um aplicativo real, usaríamos WeasyPrint para converter HTML para PDF
-    // Como não podemos executar WeasyPrint diretamente aqui, vamos simular a geração do PDF
-
-    // Criar um arquivo temporário com o HTML
-    final tempDir = await getTemporaryDirectory();
-    final htmlFile = File('${tempDir.path}/report.html');
-    await htmlFile.writeAsString(html);
-
-    // Simular a conversão para PDF (em um app real, chamaríamos WeasyPrint aqui)
-    await Future.delayed(const Duration(seconds: 2));
-
-    // Criar um arquivo PDF vazio para simular o resultado
+    final pdfBytes = await Printing.convertHtml(
+      format: PdfPageFormat.a4,
+      html: html,
+    );
     final outputFile = File(outputPath);
-    await outputFile.writeAsBytes([
-      // Cabeçalho PDF mínimo para simular um arquivo PDF válido
-      0x25, 0x50, 0x44, 0x46, 0x2D, 0x31, 0x2E, 0x34, // %PDF-1.4
-      0x0A, 0x25, 0xE2, 0xE3, 0xCF, 0xD3, // Bytes aleatórios
-    ]);
-
-    // Em um aplicativo real, executaríamos algo como:
-    // await Process.run('weasyprint', [htmlFile.path, outputPath]);
+    await outputFile.writeAsBytes(pdfBytes);
   }
 }

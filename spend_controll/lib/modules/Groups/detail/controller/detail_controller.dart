@@ -4,20 +4,17 @@ import 'package:spend_controll/modules/Groups/detail/controller/detail_state.dar
 import 'package:spend_controll/modules/Groups/group/Controller/group_controller.dart';
 import 'package:spend_controll/modules/Groups/model/group_model.dart';
 import 'package:spend_controll/modules/Groups/model/member_contribuition.dart';
-import 'package:spend_controll/modules/expenses/expense/controller/expense_controller.dart';
 import 'package:spend_controll/modules/expenses/expense/model/expense_model.dart';
 import 'package:spend_controll/modules/service/service.dart';
 
 class DetailController extends Cubit<DetailState> {
   final Service service;
   final GroupController groupController;
-  final ExpenseController expenseController;
   final FirebaseFirestore firestore;
 
   DetailController({
     required this.service,
     required this.groupController,
-    required this.expenseController,
     required this.firestore,
   }) : super(const DetailState.initial());
 
